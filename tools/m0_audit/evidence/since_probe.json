@@ -1,0 +1,72 @@
+{
+  "since_parameter": "tested",
+  "snapshot1": {
+    "observation": {
+      "observed_at_utc": "2026-11-02T03:55:15.415+00:00",
+      "section": "probe",
+      "url_redacted": "https://developer.trimet.org/ws/v2/vehicles?appID=***REDACTED***",
+      "http_status": 200,
+      "content_type": "application/json",
+      "bytes": 171170,
+      "parse_error": null,
+      "response_headers_sanitized": {
+        "Date": "Mon, 02 Nov 2026 03:55:15 GMT",
+        "Server": "Apache",
+        "Content-Type": "application/json",
+        "Via": "1.1 developer.trimet.org",
+        "Vary": "Accept-Encoding",
+        "X-Frame-Options": "SAMEORIGIN",
+        "Access-Control-Allow-Origin": "*",
+        "Keep-Alive": "timeout=10, max=94",
+        "Connection": "Keep-Alive",
+        "Transfer-Encoding": "chunked",
+        "Strict-Transport-Security": "max-age=31536000"
+      }
+    },
+    "queryTime": 1793591715212,
+    "queryTime_iso": "2026-11-02T03:55:15.212+00:00",
+    "total": 271,
+    "rail": 86
+  },
+  "snapshot2": {
+    "observation": {
+      "observed_at_utc": "2026-11-02T03:55:17.578+00:00",
+      "section": "probe",
+      "url_redacted": "https://developer.trimet.org/ws/v2/vehicles?appID=***REDACTED***&since=1793591715212",
+      "http_status": 200,
+      "content_type": "application/json",
+      "bytes": 30146,
+      "parse_error": null,
+      "response_headers_sanitized": {
+        "Date": "Mon, 02 Nov 2026 03:55:17 GMT",
+        "Server": "Apache",
+        "Content-Type": "application/json",
+        "Via": "1.1 developer.trimet.org",
+        "Vary": "Accept-Encoding",
+        "X-Frame-Options": "SAMEORIGIN",
+        "Access-Control-Allow-Origin": "*",
+        "Keep-Alive": "timeout=10, max=20",
+        "Connection": "Keep-Alive",
+        "Transfer-Encoding": "chunked",
+        "Strict-Transport-Security": "max-age=31536000"
+      }
+    },
+    "queryTime": 1793591717554,
+    "queryTime_iso": "2026-11-02T03:55:17.554+00:00",
+    "total": 48,
+    "sample_ids": [
+      4527,
+      4523,
+      4522,
+      4520,
+      4504,
+      4303,
+      4237,
+      4236
+    ],
+    "vehicle_time_gt_since_count": 37,
+    "vehicle_time_le_since_count": 11,
+    "max_time": 1793591717481
+  },
+  "result": "COLLECTED"
+}

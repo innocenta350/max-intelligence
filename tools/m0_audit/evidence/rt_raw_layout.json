@@ -1,0 +1,147 @@
+{
+  "observed_at_utc": "2026-11-02T03:56:55.012+00:00",
+  "url_redacted": "https://developer.trimet.org/ws/V1/VehiclePositions?appID=***REDACTED***",
+  "http_status": 200,
+  "content_type": "application/grtfeed",
+  "bytes": 23852,
+  "entities_total_raw": 270,
+  "entity_layouts_first4": [
+    {
+      "entity_field_wires": [
+        [
+          1,
+          2
+        ],
+        [
+          4,
+          2
+        ]
+      ]
+    },
+    {
+      "entity_field_wires": [
+        [
+          1,
+          2
+        ],
+        [
+          4,
+          2
+        ]
+      ]
+    },
+    {
+      "entity_field_wires": [
+        [
+          1,
+          2
+        ],
+        [
+          4,
+          2
+        ]
+      ]
+    },
+    {
+      "entity_field_wires": [
+        [
+          1,
+          2
+        ],
+        [
+          4,
+          2
+        ]
+      ]
+    }
+  ],
+  "first_vehicle_position_layout": {
+    "vp_field_wires": [
+      [
+        1,
+        2
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        3,
+        0
+      ],
+      [
+        4,
+        0
+      ],
+      [
+        5,
+        0
+      ],
+      [
+        7,
+        2
+      ],
+      [
+        8,
+        2
+      ]
+    ],
+    "trip_field_wires": [
+      [
+        1,
+        2
+      ],
+      [
+        5,
+        2
+      ]
+    ],
+    "trip_route_id": "2",
+    "trip_trip_id": "18309900",
+    "field2_submessage_decoded": [
+      {
+        "field": 1,
+        "wire": 5,
+        "f32": 45.50422286987305,
+        "hex": "53043642"
+      },
+      {
+        "field": 2,
+        "wire": 5,
+        "f32": -122.5441665649414,
+        "hex": "9d16f5c2"
+      },
+      {
+        "field": 3,
+        "wire": 5,
+        "f32": 270.0,
+        "hex": "00008743"
+      }
+    ],
+    "vehicle_id_raw": null,
+    "position_field_wires": null,
+    "top_level_timestamp_field7": null,
+    "field7_submessage_decoded": [
+      {
+        "field": 6,
+        "wire": 1,
+        "f64": null
+      }
+    ],
+    "field8_submessage_decoded": [
+      {
+        "field": 1,
+        "wire": 2,
+        "utf8_candidate": "4529",
+        "utf8_len": 4
+      },
+      {
+        "field": 2,
+        "wire": 2,
+        "utf8_candidate": "FX2 To Portland",
+        "utf8_len": 15
+      }
+    ]
+  },
+  "result": "COLLECTED"
+}

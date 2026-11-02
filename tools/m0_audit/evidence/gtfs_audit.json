@@ -1,0 +1,245 @@
+{
+  "result": "COLLECTED",
+  "head": {
+    "url": "https://developer.trimet.org/schedule/gtfs.zip",
+    "status": 200,
+    "content_length": "43467097",
+    "last_modified": "Wed, 21 Oct 2026 16:31:08 GMT",
+    "accept_ranges": "bytes",
+    "content_type": "application/zip"
+  },
+  "get": {
+    "url": "https://developer.trimet.org/schedule/gtfs.zip",
+    "status": 200,
+    "bytes": 43467097,
+    "content_type": "application/zip",
+    "last_modified": "Wed, 21 Oct 2026 16:31:08 GMT"
+  },
+  "zip_member_files": [
+    "agency.txt",
+    "feed_info.txt",
+    "calendar.txt",
+    "calendar_dates.txt",
+    "fare_attributes.txt",
+    "fare_leg_rules.txt",
+    "fare_media.txt",
+    "fare_products.txt",
+    "fare_rules.txt",
+    "fare_transfer_rules.txt",
+    "rider_categories.txt",
+    "routes.txt",
+    "route_directions.txt",
+    "shapes.txt",
+    "stop_features.txt",
+    "trips.txt",
+    "stop_times.txt",
+    "transfers.txt",
+    "stops.txt",
+    "linked_datasets.txt"
+  ],
+  "vehicles_probe": {
+    "observation": {
+      "observed_at_utc": "2026-11-02T03:42:58.101+00:00",
+      "section": "probe",
+      "url_redacted": "https://developer.trimet.org/ws/v2/vehicles?appID=***REDACTED***",
+      "http_status": 200,
+      "content_type": "application/json",
+      "bytes": 178928,
+      "parse_error": null,
+      "response_headers_sanitized": {
+        "Date": "Mon, 02 Nov 2026 03:42:57 GMT",
+        "Server": "Apache",
+        "Content-Type": "application/json",
+        "Via": "1.1 developer.trimet.org",
+        "Vary": "Accept-Encoding",
+        "X-Frame-Options": "SAMEORIGIN",
+        "Access-Control-Allow-Origin": "*",
+        "Keep-Alive": "timeout=10, max=16",
+        "Connection": "Keep-Alive",
+        "Transfer-Encoding": "chunked",
+        "Strict-Transport-Security": "max-age=31536000"
+      }
+    },
+    "rail": 88,
+    "total": 283
+  },
+  "static_extract": {
+    "feed_info": [
+      "feed_publisher_name,feed_publisher_url,feed_lang,default_lang,feed_start_date,feed_end_date,feed_version,feed_contact_email,feed_contact_url",
+      "TriMet,https://trimet.org/,en,en,20261011,20270227,20261011-20261021-0903,,https://groups.google.com/u/1/g/transit-developers-pdx"
+    ],
+    "agency": [
+      "agency_id,agency_name,agency_url,agency_timezone,agency_lang,agency_phone,agency_fare_url,agency_email,bikes_policy_url",
+      "PSC,Portland Streetcar,https://portlandstreetcar.org/,America/Los_Angeles,en,503-222-4200,https://portlandstreetcar.org/fare-info/fare-info,info@portlandstreetcar.org,",
+      "TRAM,Portland Aerial Tram,http://www.gobytram.com/,America/Los_Angeles,en,503-494-8283,http://www.gobytram.com/fare,commute@ohsu.edu,",
+      "TRIMET,TriMet,https://trimet.org/,America/Los_Angeles,en,503-238-RIDE,https://trimet.org/fares/,customerservice@trimet.org,https://trimet.org/bikes/"
+    ],
+    "gtfs_route_type0_rows": [
+      {
+        "route_id": "90",
+        "route_type": "0",
+        "route_short_name": "",
+        "route_long_name": "MAX Red Line",
+        "route_color": "C41F3E"
+      },
+      {
+        "route_id": "100",
+        "route_type": "0",
+        "route_short_name": "",
+        "route_long_name": "MAX Blue Line",
+        "route_color": "1359AE"
+      },
+      {
+        "route_id": "190",
+        "route_type": "0",
+        "route_short_name": "",
+        "route_long_name": "MAX Yellow Line",
+        "route_color": "FFC52F"
+      },
+      {
+        "route_id": "193",
+        "route_type": "0",
+        "route_short_name": "NS",
+        "route_long_name": "Portland Streetcar - NS Line",
+        "route_color": "72A130"
+      },
+      {
+        "route_id": "194",
+        "route_type": "0",
+        "route_short_name": "A",
+        "route_long_name": "Portland Streetcar - A Loop",
+        "route_color": "D91965"
+      },
+      {
+        "route_id": "195",
+        "route_type": "0",
+        "route_short_name": "B",
+        "route_long_name": "Portland Streetcar - B Loop",
+        "route_color": "4650BE"
+      },
+      {
+        "route_id": "200",
+        "route_type": "0",
+        "route_short_name": "",
+        "route_long_name": "MAX Green Line",
+        "route_color": "008342"
+      },
+      {
+        "route_id": "290",
+        "route_type": "0",
+        "route_short_name": "",
+        "route_long_name": "MAX Orange Line",
+        "route_color": "D05F27"
+      }
+    ],
+    "stop_id_count": 6031
+  },
+  "a3_probe": {
+    "stops_file_rows": 6031,
+    "gtfs_stop_id_count": 6031,
+    "vehicle_probe_rail_count": 88,
+    "locid_samples_from_vehicles": [
+      "10117",
+      "10120",
+      "10121",
+      "10572",
+      "10573",
+      "10575",
+      "10577",
+      "10579",
+      "11498",
+      "11502",
+      "11503",
+      "11510",
+      "11511",
+      "11514",
+      "11515",
+      "11516",
+      "13124",
+      "13132",
+      "13133",
+      "13710"
+    ],
+    "locids_found_in_gtfs_stop_id": [
+      "10117",
+      "10120",
+      "10121",
+      "10572",
+      "10573",
+      "10575",
+      "10577",
+      "10579",
+      "11498",
+      "11502",
+      "11503",
+      "11510",
+      "11511",
+      "11514",
+      "11515",
+      "11516",
+      "13124",
+      "13132",
+      "13133",
+      "13710",
+      "13720",
+      "13721",
+      "13726",
+      "13727",
+      "14641",
+      "7601",
+      "7606",
+      "8340",
+      "8346",
+      "8347",
+      "8348",
+      "8349",
+      "8359",
+      "8360",
+      "8361",
+      "8373",
+      "8374",
+      "9624",
+      "9821",
+      "9823",
+      "9824",
+      "9825",
+      "9828",
+      "9830",
+      "9832",
+      "9833",
+      "9838",
+      "9839",
+      "9845",
+      "9848",
+      "9969"
+    ],
+    "locids_not_found": [
+      "14024",
+      "14025"
+    ],
+    "gtfs_rail_route_ids": [
+      "100",
+      "190",
+      "193",
+      "194",
+      "195",
+      "200",
+      "290",
+      "90"
+    ],
+    "gtfs_rail_short_names": [
+      "",
+      "A",
+      "B",
+      "NS"
+    ],
+    "max_numbers_from_routeconfig_in_gtfs_route_id": [
+      "100",
+      "190",
+      "200",
+      "290",
+      "90"
+    ],
+    "max_numbers_from_routeconfig_in_gtfs_short_name": []
+  }
+}

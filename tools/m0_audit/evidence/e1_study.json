@@ -1,0 +1,181 @@
+{
+  "steps": {
+    "initial": {
+      "observation": {
+        "observed_at_utc": "2026-11-02T03:47:21.372+00:00",
+        "section": "probe",
+        "url_redacted": "https://developer.trimet.org/ws/v2/vehicles?appID=***REDACTED***",
+        "http_status": 200,
+        "content_type": "application/json",
+        "bytes": 175133,
+        "parse_error": null,
+        "response_headers_sanitized": {
+          "Date": "Mon, 02 Nov 2026 03:47:21 GMT",
+          "Server": "Apache",
+          "Content-Type": "application/json",
+          "Via": "1.1 developer.trimet.org",
+          "Vary": "Accept-Encoding",
+          "X-Frame-Options": "SAMEORIGIN",
+          "Access-Control-Allow-Origin": "*",
+          "Keep-Alive": "timeout=10, max=50",
+          "Connection": "Keep-Alive",
+          "Transfer-Encoding": "chunked",
+          "Strict-Transport-Security": "max-age=31536000"
+        }
+      },
+      "queryTime": 1793591241137,
+      "queryTime_iso": "2026-11-02T03:47:21.137+00:00",
+      "local_ms": 1793591241374,
+      "local_clock_minus_queryTime_ms": 237,
+      "total": 277,
+      "rail": 84
+    },
+    "rail_expires_minus_time_seconds": {
+      "min": 600.0,
+      "median": 839.067,
+      "max": 1844.294,
+      "count": 84
+    },
+    "selected_vehicle_first": {
+      "vehicleID": 231,
+      "routeNumber": 100,
+      "routeColor": "1359AE",
+      "routeSubType": "Light Rail",
+      "direction": 1,
+      "tripID": "18331445",
+      "newTrip": false,
+      "offRoute": false,
+      "time": 1793591039386,
+      "time_iso": "2026-11-02T03:43:59.386+00:00",
+      "expires": 1793591639386,
+      "expires_iso": "2026-11-02T03:53:59.386+00:00",
+      "expires_minus_queryTime_s": 398.249,
+      "delay": -670,
+      "lat": 45.52142191975172,
+      "lon": -122.98985538882731,
+      "bearing": 271,
+      "nextLocID": 9845,
+      "nextStopSeq": 43,
+      "lastLocID": 9844,
+      "lastStopSeq": 42,
+      "signMessage": "Blue Line to Hillsboro",
+      "signMessageLong": "MAX  Blue Line to Hillsboro",
+      "garage": "ELMO",
+      "blockID": 9022,
+      "source": "aim"
+    },
+    "after_expiry_default": {
+      "observation": {
+        "observed_at_utc": "2026-11-02T03:54:03.045+00:00",
+        "section": "probe",
+        "url_redacted": "https://developer.trimet.org/ws/v2/vehicles?appID=***REDACTED***",
+        "http_status": 200,
+        "content_type": "application/json",
+        "bytes": 172460,
+        "parse_error": null,
+        "response_headers_sanitized": {
+          "Date": "Mon, 02 Nov 2026 03:54:02 GMT",
+          "Server": "Apache",
+          "Content-Type": "application/json",
+          "Via": "1.1 developer.trimet.org",
+          "Vary": "Accept-Encoding",
+          "X-Frame-Options": "SAMEORIGIN",
+          "Access-Control-Allow-Origin": "*",
+          "Keep-Alive": "timeout=10, max=94",
+          "Connection": "Keep-Alive",
+          "Transfer-Encoding": "chunked",
+          "Strict-Transport-Security": "max-age=31536000"
+        }
+      },
+      "queryTime": 1793591642819,
+      "queryTime_iso": "2026-11-02T03:54:02.819+00:00",
+      "expires_last_seen": 1793591639386,
+      "expires_passed_by_ms_at_queryTime": 3433,
+      "status": 200,
+      "total_rail": 86,
+      "vehicle_still_anywhere": false
+    },
+    "after_expiry_showStale_true": {
+      "observation": {
+        "observed_at_utc": "2026-11-02T03:54:06.386+00:00",
+        "section": "probe",
+        "url_redacted": "https://developer.trimet.org/ws/v2/vehicles?showStale=true&appID=***REDACTED***",
+        "http_status": 200,
+        "content_type": "application/json",
+        "bytes": 186322,
+        "parse_error": null,
+        "response_headers_sanitized": {
+          "Date": "Mon, 02 Nov 2026 03:54:06 GMT",
+          "Server": "Apache",
+          "Content-Type": "application/json",
+          "Via": "1.1 developer.trimet.org",
+          "Vary": "Accept-Encoding",
+          "X-Frame-Options": "SAMEORIGIN",
+          "Access-Control-Allow-Origin": "*",
+          "Keep-Alive": "timeout=10, max=37",
+          "Connection": "Keep-Alive",
+          "Transfer-Encoding": "chunked",
+          "Strict-Transport-Security": "max-age=31536000"
+        }
+      },
+      "queryTime": 1793591646197,
+      "queryTime_iso": "2026-11-02T03:54:06.197+00:00",
+      "expires_last_seen": 1793591639386,
+      "expires_passed_by_ms_at_queryTime": 6811,
+      "status": 200,
+      "total_vehicles": 295,
+      "vehicle_still_anywhere": true
+    }
+  },
+  "conclusion": {
+    "vehicleID": 231,
+    "unit_check_ratio": 0.9999999960961014,
+    "expires_epoch_ms_rounded_to_seconds_observed": false,
+    "absence_observed": true,
+    "absence_observation": {
+      "cycle": 2,
+      "queryTime": 1793591642549,
+      "queryTime_iso": "2026-11-02T03:54:02.549+00:00",
+      "present": false,
+      "expires_now": null,
+      "expires_now_iso": null,
+      "expires_extended": false,
+      "expires_passed_by_ms_at_queryTime": 3163
+    },
+    "present_after_expiry_default": false,
+    "present_after_expiry_showStale": true,
+    "follow_history": [
+      {
+        "cycle": 0,
+        "queryTime": 1793591391519,
+        "queryTime_iso": "2026-11-02T03:49:51.519+00:00",
+        "present": true,
+        "expires_now": 1793591639386,
+        "expires_now_iso": "2026-11-02T03:53:59.386+00:00",
+        "expires_extended": false,
+        "expires_passed_by_ms_at_queryTime": -247867
+      },
+      {
+        "cycle": 1,
+        "queryTime": 1793591542009,
+        "queryTime_iso": "2026-11-02T03:52:22.009+00:00",
+        "present": true,
+        "expires_now": 1793591639386,
+        "expires_now_iso": "2026-11-02T03:53:59.386+00:00",
+        "expires_extended": false,
+        "expires_passed_by_ms_at_queryTime": -97377
+      },
+      {
+        "cycle": 2,
+        "queryTime": 1793591642549,
+        "queryTime_iso": "2026-11-02T03:54:02.549+00:00",
+        "present": false,
+        "expires_now": null,
+        "expires_now_iso": null,
+        "expires_extended": false,
+        "expires_passed_by_ms_at_queryTime": 3163
+      }
+    ]
+  },
+  "result": "COLLECTED"
+}

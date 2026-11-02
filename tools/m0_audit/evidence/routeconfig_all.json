@@ -1,0 +1,103 @@
+{
+  "observation": {
+    "observed_at_utc": "2026-11-02T03:38:12.155+00:00",
+    "section": "probe",
+    "url_redacted": "https://developer.trimet.org/ws/V1/routeConfig?appID=***REDACTED***&json=true",
+    "http_status": 200,
+    "content_type": "application/json",
+    "bytes": 12748,
+    "parse_error": null,
+    "response_headers_sanitized": {
+      "Date": "Mon, 02 Nov 2026 03:38:12 GMT",
+      "Server": "Apache",
+      "Content-Type": "application/json",
+      "Via": "1.1 developer.trimet.org",
+      "Vary": "Accept-Encoding",
+      "X-Frame-Options": "SAMEORIGIN",
+      "Access-Control-Allow-Origin": "*",
+      "Keep-Alive": "timeout=10, max=79",
+      "Connection": "Keep-Alive",
+      "Transfer-Encoding": "chunked",
+      "Strict-Transport-Security": "max-age=31536000"
+    }
+  },
+  "summary": {
+    "route_count": 82,
+    "light_rail_routes": [
+      {
+        "route": 100,
+        "type": "R",
+        "routeSubType": "Light Rail",
+        "routeColor": "1359AE",
+        "desc": "MAX Blue Line",
+        "frequentService": true,
+        "routeSortOrder": 100,
+        "direction_count": 0,
+        "stops_total": 0,
+        "direction_samples": []
+      },
+      {
+        "route": 200,
+        "type": "R",
+        "routeSubType": "Light Rail",
+        "routeColor": "008342",
+        "desc": "MAX Green Line",
+        "frequentService": true,
+        "routeSortOrder": 110,
+        "direction_count": 0,
+        "stops_total": 0,
+        "direction_samples": []
+      },
+      {
+        "route": 290,
+        "type": "R",
+        "routeSubType": "Light Rail",
+        "routeColor": "D05F27",
+        "desc": "MAX Orange Line",
+        "frequentService": true,
+        "routeSortOrder": 120,
+        "direction_count": 0,
+        "stops_total": 0,
+        "direction_samples": []
+      },
+      {
+        "route": 90,
+        "type": "R",
+        "routeSubType": "Light Rail",
+        "routeColor": "C41F3E",
+        "desc": "MAX Red Line",
+        "frequentService": true,
+        "routeSortOrder": 130,
+        "direction_count": 0,
+        "stops_total": 0,
+        "direction_samples": []
+      },
+      {
+        "route": 190,
+        "type": "R",
+        "routeSubType": "Light Rail",
+        "routeColor": "FFC52F",
+        "desc": "MAX Yellow Line",
+        "frequentService": true,
+        "routeSortOrder": 140,
+        "direction_count": 0,
+        "stops_total": 0,
+        "direction_samples": []
+      }
+    ],
+    "subtype_values_observed": [
+      "Aerial Tram",
+      "BRT",
+      "Bus",
+      "Commuter Rail",
+      "Light Rail",
+      "Shuttle",
+      "Streetcar"
+    ],
+    "type_values_observed": [
+      "B",
+      "R"
+    ]
+  },
+  "result": "HTTP OK"
+}

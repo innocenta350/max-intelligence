@@ -1,0 +1,151 @@
+{
+  "observation": {
+    "observed_at_utc": "2026-11-02T03:39:23.358+00:00",
+    "section": "probe",
+    "url_redacted": "https://developer.trimet.org/ws/V1/routeConfig?appID=***REDACTED***&json=true&routes=90,100,190,200,290&dir=true&stops=true",
+    "http_status": 200,
+    "content_type": "application/json",
+    "bytes": 32757,
+    "parse_error": null,
+    "response_headers_sanitized": {
+      "Date": "Mon, 02 Nov 2026 03:39:23 GMT",
+      "Server": "Apache",
+      "Content-Type": "application/json",
+      "Via": "1.1 developer.trimet.org",
+      "Vary": "Accept-Encoding",
+      "X-Frame-Options": "SAMEORIGIN",
+      "Access-Control-Allow-Origin": "*",
+      "Keep-Alive": "timeout=10, max=97",
+      "Connection": "Keep-Alive",
+      "Transfer-Encoding": "chunked",
+      "Strict-Transport-Security": "max-age=31536000"
+    }
+  },
+  "summary": {
+    "route_count": 5,
+    "light_rail_routes": [
+      {
+        "route": 90,
+        "type": "R",
+        "routeSubType": "Light Rail",
+        "routeColor": "C41F3E",
+        "desc": "MAX Red Line",
+        "frequentService": true,
+        "routeSortOrder": 130,
+        "direction_count": 2,
+        "stops_total": 63,
+        "direction_samples": [
+          {
+            "dir": 0,
+            "desc": "To Portland International Airport ",
+            "stops": 32
+          },
+          {
+            "dir": 1,
+            "desc": "To Hillsboro",
+            "stops": 31
+          }
+        ]
+      },
+      {
+        "route": 100,
+        "type": "R",
+        "routeSubType": "Light Rail",
+        "routeColor": "1359AE",
+        "desc": "MAX Blue Line",
+        "frequentService": true,
+        "routeSortOrder": 100,
+        "direction_count": 2,
+        "stops_total": 88,
+        "direction_samples": [
+          {
+            "dir": 0,
+            "desc": "To Gresham",
+            "stops": 44
+          },
+          {
+            "dir": 1,
+            "desc": "To Hillsboro ",
+            "stops": 44
+          }
+        ]
+      },
+      {
+        "route": 190,
+        "type": "R",
+        "routeSubType": "Light Rail",
+        "routeColor": "FFC52F",
+        "desc": "MAX Yellow Line",
+        "frequentService": true,
+        "routeSortOrder": 140,
+        "direction_count": 2,
+        "stops_total": 28,
+        "direction_samples": [
+          {
+            "dir": 0,
+            "desc": "To Expo Center",
+            "stops": 17
+          },
+          {
+            "dir": 1,
+            "desc": "To Portland City Center",
+            "stops": 11
+          }
+        ]
+      },
+      {
+        "route": 200,
+        "type": "R",
+        "routeSubType": "Light Rail",
+        "routeColor": "008342",
+        "desc": "MAX Green Line",
+        "frequentService": true,
+        "routeSortOrder": 110,
+        "direction_count": 2,
+        "stops_total": 18,
+        "direction_samples": [
+          {
+            "dir": 0,
+            "desc": "To Clackamas Town Center",
+            "stops": 9
+          },
+          {
+            "dir": 1,
+            "desc": "To Gateway Transit Center",
+            "stops": 9
+          }
+        ]
+      },
+      {
+        "route": 290,
+        "type": "R",
+        "routeSubType": "Light Rail",
+        "routeColor": "D05F27",
+        "desc": "MAX Orange Line",
+        "frequentService": true,
+        "routeSortOrder": 120,
+        "direction_count": 2,
+        "stops_total": 27,
+        "direction_samples": [
+          {
+            "dir": 0,
+            "desc": "To Portland City Center",
+            "stops": 10
+          },
+          {
+            "dir": 1,
+            "desc": "To Milwaukie",
+            "stops": 17
+          }
+        ]
+      }
+    ],
+    "subtype_values_observed": [
+      "Light Rail"
+    ],
+    "type_values_observed": [
+      "R"
+    ]
+  },
+  "result": "HTTP OK"
+}
