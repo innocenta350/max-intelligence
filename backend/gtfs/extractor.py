@@ -297,6 +297,18 @@ def _discard_if_own(staging_dir: Path) -> str | None:
     return None
 
 
+def discard_staging_if_own(staging_dir: Path | str) -> str | None:
+    """Public S6 wrapper around :func:`_discard_if_own` (no behavior change).
+
+    Stage S6's DatasetManager calls this after a failed load to clean up its
+    own staging directory. The ownership rules are unchanged: the staging
+    directory is removed only when its ``guard.json`` verifiably records this
+    process's pid; anything foreign, unreadable, or uncertain is left in
+    place and reported through the returned diagnostic note.
+    """
+    return _discard_if_own(Path(staging_dir))
+
+
 def _checked_staging_arg(staging_dir: Path | str | None) -> Path:
     """Validate the optional caller-supplied staging directory exists."""
     if staging_dir is None:
