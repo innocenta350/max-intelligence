@@ -1,0 +1,371 @@
+{
+  "files": {
+    "feed_info.txt": {
+      "exists": true,
+      "size_bytes": 271,
+      "header": [
+        "feed_publisher_name",
+        "feed_publisher_url",
+        "feed_lang",
+        "default_lang",
+        "feed_start_date",
+        "feed_end_date",
+        "feed_version",
+        "feed_contact_email",
+        "feed_contact_url"
+      ],
+      "rows": 1,
+      "blank_counts": {
+        "feed_contact_email": 1
+      },
+      "row_problems": 0,
+      "blank_lines_skipped": 0,
+      "header_names_needing_trim": [],
+      "duplicate_header_names": []
+    },
+    "agency.txt": {
+      "exists": true,
+      "size_bytes": 571,
+      "header": [
+        "agency_id",
+        "agency_name",
+        "agency_url",
+        "agency_timezone",
+        "agency_lang",
+        "agency_phone",
+        "agency_fare_url",
+        "agency_email",
+        "bikes_policy_url"
+      ],
+      "rows": 3,
+      "blank_counts": {
+        "bikes_policy_url": 2
+      },
+      "row_problems": 0,
+      "blank_lines_skipped": 0,
+      "header_names_needing_trim": [],
+      "duplicate_header_names": []
+    },
+    "routes.txt": {
+      "exists": true,
+      "size_bytes": 7895,
+      "header": [
+        "route_id",
+        "agency_id",
+        "route_short_name",
+        "route_long_name",
+        "route_type",
+        "route_url",
+        "route_color",
+        "route_text_color",
+        "route_sort_order",
+        "network_id"
+      ],
+      "rows": 82,
+      "blank_counts": {
+        "route_short_name": 8,
+        "network_id": 1
+      },
+      "row_problems": 0,
+      "blank_lines_skipped": 0,
+      "header_names_needing_trim": [],
+      "duplicate_header_names": []
+    },
+    "route_directions.txt": {
+      "exists": true,
+      "size_bytes": 4918,
+      "header": [
+        "route_id",
+        "direction_id",
+        "direction_name"
+      ],
+      "rows": 161,
+      "blank_counts": {},
+      "row_problems": 0,
+      "blank_lines_skipped": 0,
+      "header_names_needing_trim": [],
+      "duplicate_header_names": []
+    },
+    "stops.txt": {
+      "exists": true,
+      "size_bytes": 1109015,
+      "header": [
+        "stop_id",
+        "stop_code",
+        "stop_name",
+        "tts_stop_name",
+        "stop_desc",
+        "stop_lat",
+        "stop_lon",
+        "zone_id",
+        "stop_url",
+        "location_type",
+        "parent_station",
+        "wheelchair_boarding",
+        "platform_code",
+        "direction",
+        "position"
+      ],
+      "rows": 6031,
+      "blank_counts": {
+        "parent_station": 5895,
+        "platform_code": 6031,
+        "direction": 75,
+        "stop_code": 68,
+        "stop_desc": 68,
+        "zone_id": 68,
+        "stop_url": 68,
+        "position": 68
+      },
+      "row_problems": 0,
+      "blank_lines_skipped": 0,
+      "header_names_needing_trim": [],
+      "duplicate_header_names": []
+    },
+    "shapes.txt": {
+      "exists": true,
+      "size_bytes": 44495863,
+      "header": [
+        "shape_id",
+        "shape_pt_lat",
+        "shape_pt_lon",
+        "shape_pt_sequence",
+        "shape_dist_traveled"
+      ],
+      "rows": 1095877,
+      "blank_counts": {},
+      "row_problems": 0,
+      "blank_lines_skipped": 0,
+      "header_names_needing_trim": [],
+      "duplicate_header_names": []
+    },
+    "trips.txt": {
+      "exists": true,
+      "size_bytes": 2638190,
+      "header": [
+        "route_id",
+        "service_id",
+        "trip_id",
+        "trip_headsign",
+        "trip_short_name",
+        "direction_id",
+        "block_id",
+        "shape_id",
+        "trip_type",
+        "wheelchair_accessible",
+        "bikes_allowed"
+      ],
+      "rows": 67957,
+      "blank_counts": {
+        "trip_headsign": 67957,
+        "trip_short_name": 67957,
+        "trip_type": 67957
+      },
+      "row_problems": 0,
+      "blank_lines_skipped": 0,
+      "header_names_needing_trim": [],
+      "duplicate_header_names": []
+    },
+    "stop_times.txt": {
+      "exists": true,
+      "size_bytes": 227456610,
+      "header": [
+        "trip_id",
+        "arrival_time",
+        "departure_time",
+        "stop_id",
+        "stop_sequence",
+        "stop_headsign",
+        "pickup_type",
+        "drop_off_type",
+        "shape_dist_traveled",
+        "timepoint"
+      ],
+      "rows": 3407790,
+      "blank_counts": {},
+      "row_problems": 0,
+      "blank_lines_skipped": 0,
+      "header_names_needing_trim": [],
+      "duplicate_header_names": []
+    }
+  },
+  "route_directions": {
+    "rows": 161,
+    "unique_pairs": 161,
+    "duplicate_pairs": [],
+    "direction_id_values": {
+      "0": 82,
+      "1": 79
+    },
+    "covers_max_routes": [
+      "100",
+      "190",
+      "200",
+      "290",
+      "90"
+    ],
+    "max_routes_missing": [],
+    "max_direction_names": {
+      "100": {
+        "0": "To Gresham",
+        "1": "To Hillsboro"
+      },
+      "190": {
+        "0": "To Expo Center",
+        "1": "To Portland City Center"
+      },
+      "200": {
+        "0": "To Clackamas Town Center",
+        "1": "To Gateway Transit Center"
+      },
+      "290": {
+        "0": "To Portland City Center",
+        "1": "To Milwaukie"
+      },
+      "90": {
+        "0": "To Portland International Airport",
+        "1": "To Hillsboro"
+      }
+    }
+  },
+  "routes": {
+    "route_id_unique": true,
+    "route_type0_rows": [
+      {
+        "route_id": "90",
+        "agency_id": "TRIMET",
+        "route_short_name": "",
+        "route_long_name": "MAX Red Line",
+        "route_color": "C41F3E"
+      },
+      {
+        "route_id": "100",
+        "agency_id": "TRIMET",
+        "route_short_name": "",
+        "route_long_name": "MAX Blue Line",
+        "route_color": "1359AE"
+      },
+      {
+        "route_id": "190",
+        "agency_id": "TRIMET",
+        "route_short_name": "",
+        "route_long_name": "MAX Yellow Line",
+        "route_color": "FFC52F"
+      },
+      {
+        "route_id": "193",
+        "agency_id": "PSC",
+        "route_short_name": "NS",
+        "route_long_name": "Portland Streetcar - NS Line",
+        "route_color": "72A130"
+      },
+      {
+        "route_id": "194",
+        "agency_id": "PSC",
+        "route_short_name": "A",
+        "route_long_name": "Portland Streetcar - A Loop",
+        "route_color": "D91965"
+      },
+      {
+        "route_id": "195",
+        "agency_id": "PSC",
+        "route_short_name": "B",
+        "route_long_name": "Portland Streetcar - B Loop",
+        "route_color": "4650BE"
+      },
+      {
+        "route_id": "200",
+        "agency_id": "TRIMET",
+        "route_short_name": "",
+        "route_long_name": "MAX Green Line",
+        "route_color": "008342"
+      },
+      {
+        "route_id": "290",
+        "agency_id": "TRIMET",
+        "route_short_name": "",
+        "route_long_name": "MAX Orange Line",
+        "route_color": "D05F27"
+      }
+    ],
+    "route_directions_orphan_route_ids": []
+  },
+  "stops": {
+    "stop_id_unique": true,
+    "location_type_values": {
+      "0": 5963,
+      "1": 68
+    },
+    "rows_with_parent_station": 136,
+    "locid_14024_present": false,
+    "locid_14025_present": false
+  },
+  "trips_max": {
+    "trip_count": 11602,
+    "rows_per_route": {
+      "90": 2204,
+      "100": 2920,
+      "190": 2213,
+      "200": 2152,
+      "290": 2113
+    },
+    "direction_id_values": {
+      "0": 5896,
+      "1": 5706
+    },
+    "shape_id_blank_rows": 0,
+    "distinct_shape_ids": 146,
+    "shapes_shared_across_routes": 0,
+    "shapes_per_route": {
+      "100": 57,
+      "190": 38,
+      "200": 9,
+      "290": 15,
+      "90": 27
+    }
+  },
+  "stop_times_max": {
+    "rows": 241920,
+    "distinct_trips": 11602,
+    "max_trips_without_stop_times": 0,
+    "distinct_stop_ids": 162,
+    "unmatched_stop_ids": {},
+    "unmatched_distinct": 0,
+    "duplicate_or_unparseable_stop_sequence": 0,
+    "out_of_order_rows": 0,
+    "arrival_time_blank": 0,
+    "departure_time_blank": 0
+  },
+  "shapes_max": {
+    "referenced_shape_ids": 146,
+    "missing_from_shapes_txt": [],
+    "points_total": 121509,
+    "points_per_shape_min": 84,
+    "points_per_shape_max": 1933,
+    "non_numeric_coords": 0,
+    "duplicate_or_unparseable_sequences": 0
+  },
+  "csvio_required_columns": {
+    "feed_info.txt": "ok",
+    "agency.txt": "ok",
+    "routes.txt": "ok",
+    "route_directions.txt": "ok",
+    "stops.txt": "ok",
+    "shapes.txt": "ok",
+    "trips.txt": "ok",
+    "stop_times.txt": "ok"
+  },
+  "max_stops": {
+    "distinct_stop_ids": 162,
+    "location_type_values": {
+      "0": 162
+    },
+    "platforms_with_parent_station": 134,
+    "distinct_parent_stations": 67,
+    "parent_targets_missing_from_stops": [],
+    "max_stops_without_parent_station": 28,
+    "stop_times_rows_referencing_station_rows": 0,
+    "lat_lon_blank": 0,
+    "station_rows_among_max_stops": 0
+  }
+}

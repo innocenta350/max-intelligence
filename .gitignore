@@ -20,3 +20,6 @@ dist/
 # Operating system
 .DS_Store
 Thumbs.db
+
+# Runtime data (GTFS downloads, extracted datasets, manifests)
+data/
