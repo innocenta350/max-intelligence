@@ -224,6 +224,13 @@ class DatasetManager:
         the previous ``current`` is preserved, this load's staging directory
         is discarded if it is still verifiably ours, and the pipeline error
         propagates.
+
+        Staging hygiene (S7 integration fix): a fresh promotion renames the
+        staging directory into the dataset version, but an *idempotent
+        reuse* short-circuit leaves it in place — so the manager discards it
+        (ownership-verified) whenever promotion reports reuse. Without this,
+        every reused load leaked one owned staging directory (observed live
+        during S7 verification).
         """
         with self._load_lock:
             staged: StagedZip | None = None
@@ -242,11 +249,18 @@ class DatasetManager:
                     if note is not None:
                         exc.cleanup_failure = note
                 raise
+            notes = list(promotion.notes)
+            if promotion.reused:
+                # The reuse short-circuit did not consume the staging
+                # directory; clean up our own now (S7 integration fix).
+                note = discard_staging_if_own(staged.staging_dir)
+                if note is not None:
+                    notes.append(note)
             with self._swap_lock:
                 self._network = network
             return LoadOutcome(
                 network=network,
                 promotion=promotion,
                 reused=promotion.reused,
-                notes=promotion.notes,
+                notes=tuple(notes),
             )
