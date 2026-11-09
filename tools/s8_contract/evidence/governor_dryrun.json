@@ -1,0 +1,176 @@
+{
+  "artifact_tags": [
+    "DRYRUN"
+  ],
+  "campaign_id": "unknown",
+  "tool": "tools/s8_contract/probe_s8.py",
+  "captured_at_utc_ms": 1794024267596,
+  "captured_at_utc": "2026-11-07T04:04:27.596Z",
+  "timestamp_convention": "UTC epoch milliseconds primary; ISO-8601 Z secondary",
+  "requests_consumed_by_this_artifact": 0,
+  "note": "Loopback-only verification; zero live requests emitted. Governor instances here are throwaway test budgets, separate from the campaign budget.",
+  "checks": {
+    "check1_concurrent_reservations": {
+      "pass": true,
+      "detail": {
+        "counters": {
+          "reserved": 75,
+          "transmitted": 74,
+          "succeeded": 74,
+          "failed": 0,
+          "retried": 0,
+          "aborted_pre_transmission": 1
+        },
+        "unexpected": [],
+        "note": "granted units are fully accounted: transmitted + aborted_pre_transmission == reserved"
+      }
+    },
+    "check2_boundary_149_150_151": {
+      "pass": true,
+      "detail": {
+        "unit_149_granted": true,
+        "unit_150_granted": true,
+        "unit_151_granted": false,
+        "refusal_reasons": [
+          "stop event set"
+        ]
+      }
+    },
+    "check3_retry_pool_contention": {
+      "pass": true,
+      "detail": {
+        "retry_pool_used": 20,
+        "retry_grants": 20,
+        "retry_pool_exhausted_refusals": 1,
+        "other_retry_refusals": 4,
+        "items_flagged_incomplete": 25
+      }
+    },
+    "check7_retry_pool_bound": {
+      "pass": true,
+      "detail": {
+        "retried_counter": 20,
+        "retry_allocation_used": 20
+      }
+    },
+    "check4_stop_event_propagation": {
+      "pass": true,
+      "detail": {
+        "stop_points": {
+          "A": {
+            "iterations": 3,
+            "stopped_on": "aborted_pre_transmission"
+          },
+          "B": {
+            "iterations": 3,
+            "stopped_on": "stop_event_observed"
+          },
+          "C": {
+            "iterations": 3,
+            "stopped_on": "stop_event_observed"
+          }
+        },
+        "total_successful_iterations": 9,
+        "counters": {
+          "reserved": 10,
+          "transmitted": 9,
+          "succeeded": 9,
+          "failed": 0,
+          "retried": 0,
+          "aborted_pre_transmission": 1
+        },
+        "stop_log": [
+          {
+            "reason": "hard cap reached after grant",
+            "tag": "DRY4-A",
+            "at_utc_ms": 1794024266940,
+            "at_utc": "2026-11-07T04:04:26.940Z",
+            "total_used": 10
+          }
+        ],
+        "note": "the final grant reaches the cap and sets the stop event; a just-granted reservation may legitimately abort pre-transmission and is consumed"
+      }
+    },
+    "check5_ambiguous_failure_consumes": {
+      "pass": true,
+      "detail": {
+        "outcome": "failed",
+        "counters": {
+          "reserved": 1,
+          "transmitted": 1,
+          "succeeded": 0,
+          "failed": 1,
+          "retried": 0,
+          "aborted_pre_transmission": 0
+        }
+      }
+    },
+    "check6_allocation_isolation": {
+      "pass": true,
+      "detail": {
+        "allocations": {
+          "base": {
+            "max": 30,
+            "used": 30
+          },
+          "retry_pool": {
+            "max": 5,
+            "used": 0
+          },
+          "reserve": {
+            "max": 5,
+            "used": 0
+          }
+        }
+      }
+    },
+    "check8_reserve_discipline": {
+      "pass": true,
+      "detail": {
+        "implicit_draw_refused": true,
+        "no_justification_refused": true,
+        "justified_draw_granted": true,
+        "reserve_draws": [
+          {
+            "tag": "DRY8",
+            "unit": 3,
+            "justification": "dry-run test draw",
+            "at_utc_ms": 1794024267091,
+            "at_utc": "2026-11-07T04:04:27.091Z"
+          }
+        ]
+      }
+    },
+    "check9_global_cap_any_interleaving": {
+      "pass": true,
+      "detail": {
+        "max_total_used": 60,
+        "reserved": 60,
+        "allocations": {
+          "base": {
+            "max": 50,
+            "used": 50
+          },
+          "retry_pool": {
+            "max": 20,
+            "used": 0
+          },
+          "reserve": {
+            "max": 20,
+            "used": 10
+          }
+        },
+        "note": "base + reserve draws drive the cap; retry-pool exhaustion sets stop-all by design and is covered by checks 3/7"
+      }
+    },
+    "check10_no_double_grant": {
+      "pass": true,
+      "detail": {
+        "granted_count": 40,
+        "reserved": 40
+      }
+    }
+  },
+  "all_pass": true,
+  "result": "PASS"
+}

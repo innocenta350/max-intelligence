@@ -1,0 +1,102 @@
+{
+  "resultSet": {
+    "queryTime": 1794024790551,
+    "alert": [
+      {
+        "id": 293963,
+        "begin": 1794019320187,
+        "end": 1794051000000,
+        "system_wide_flag": false,
+        "header_text": "",
+        "info_link_url": null,
+        "routes": [
+          {
+            "id": 200,
+            "type": "R",
+            "no_service_flag": false
+          }
+        ],
+        "locations": [],
+        "desc": "MAX Green Line service experiencing delays up to 15 minutes due to operating issue"
+      },
+      {
+        "id": 262613,
+        "begin": 1754994600000,
+        "end": null,
+        "system_wide_flag": false,
+        "header_text": "",
+        "info_link_url": null,
+        "routes": [
+          {
+            "id": 74,
+            "type": "B",
+            "no_service_flag": false
+          }
+        ],
+        "locations": [],
+        "desc": "No service to the eastbound stops on SE Powell at 168th (stop ID 4612) and Meadowland Center (Stop ID 4534) due to long-term construction."
+      },
+      {
+        "id": 270797,
+        "begin": 1763132400000,
+        "end": null,
+        "system_wide_flag": false,
+        "header_text": "",
+        "info_link_url": null,
+        "routes": [
+          {
+            "id": 9,
+            "type": "B",
+            "no_service_flag": false
+          }
+        ],
+        "locations": [
+          {
+            "id": 4606,
+            "desc": "SE Powell & 160th",
+            "no_service_flag": false
+          }
+        ],
+        "desc": "No service to the eastbound stop at SE Powell & 160th (Stop ID 4606) on weekdays from 7:00 a.m. to 5:00 p.m. due to long-term construction.\n"
+      },
+      {
+        "id": 281438,
+        "begin": 1778011200000,
+        "end": null,
+        "system_wide_flag": false,
+        "header_text": "",
+        "info_link_url": null,
+        "routes": [
+          {
+            "id": 287,
+            "type": "B",
+            "no_service_flag": false
+          },
+          {
+            "id": 288,
+            "type": "B",
+            "no_service_flag": false
+          },
+          {
+            "id": 292,
+            "type": "B",
+            "no_service_flag": false
+          }
+        ],
+        "locations": [],
+        "desc": "No service at eastbound stop SW Alder & 10th (Stop ID 14190) due to long-term construction. Use temp stop on Yamhill & 10th on lamp post."
+      },
+      {
+        "id": 289709,
+        "begin": 1788281640000,
+        "end": null,
+        "system_wide_flag": false,
+        "header_text": "",
+        "info_link_url": "https://trimet.org/alerts/elevators/index.htm#washingtonpark",
+        "routes": [],
+        "locations": [],
+        "desc": "One of the eastbound elevators at Washington Park MAX Station by Oregon Zoo is out of service. Use other eastbound elevator or ones on opposite end of the platf"
+      }
+    ]
+  }
+}

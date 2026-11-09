@@ -1,0 +1,25 @@
+{
+  "artifact_tags": [
+    "B3"
+  ],
+  "campaign_id": "s8-1794024279858-afcea02f",
+  "tool": "tools/s8_contract/probe_s8.py",
+  "captured_at_utc_ms": 1794025479990,
+  "captured_at_utc": "2026-11-07T04:24:39.990Z",
+  "timestamp_convention": "UTC epoch milliseconds primary; ISO-8601 Z secondary",
+  "b3": {
+    "status": "COMPLETE",
+    "capture_count": 5,
+    "id_counts_per_capture": [
+      32,
+      32,
+      32,
+      32,
+      32
+    ],
+    "distinct_ids_overall": 32,
+    "recurring_ids": 32,
+    "recurring_with_changed_content": [],
+    "ids_appearing_disappearing": []
+  }
+}

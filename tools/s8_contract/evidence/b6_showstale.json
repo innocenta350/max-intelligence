@@ -1,0 +1,1477 @@
+{
+  "artifact_tags": [
+    "B6",
+    "B8"
+  ],
+  "campaign_id": "s8-1794024279858-afcea02f",
+  "tool": "tools/s8_contract/probe_s8.py",
+  "captured_at_utc_ms": 1794025388438,
+  "captured_at_utc": "2026-11-07T04:23:08.438Z",
+  "timestamp_convention": "UTC epoch milliseconds primary; ISO-8601 Z secondary",
+  "b6": {
+    "pairs": [
+      {
+        "pair_index": 0,
+        "default": {
+          "tag": "B6",
+          "kind": "base",
+          "url_redacted": "https://developer.trimet.org/ws/v2/vehicles",
+          "started_at_utc_ms": 1794025388438,
+          "started_at_utc": "2026-11-07T04:23:08.438Z",
+          "transmitted_at_utc_ms": 1794025388438,
+          "outcome": "succeeded",
+          "http_status": 200,
+          "bytes": 192786,
+          "date_header": "Sat, 07 Nov 2026 04:23:08 GMT",
+          "date_header_ms": 1794025388000,
+          "content_type": "application/json",
+          "content_encoding": null,
+          "response_headers_sanitized": {
+            "Date": "Sat, 07 Nov 2026 04:23:08 GMT",
+            "Server": "Apache",
+            "Content-Type": "application/json",
+            "Via": "1.1 developer.trimet.org",
+            "Vary": "Accept-Encoding",
+            "X-Frame-Options": "SAMEORIGIN",
+            "Access-Control-Allow-Origin": "*",
+            "Keep-Alive": "timeout=10, max=42",
+            "Connection": "Keep-Alive",
+            "Transfer-Encoding": "chunked",
+            "Strict-Transport-Security": "max-age=31536000"
+          },
+          "finished_at_utc_ms": 1794025388783
+        },
+        "showStale": {
+          "tag": "B6",
+          "kind": "base",
+          "url_redacted": "https://developer.trimet.org/ws/v2/vehicles",
+          "started_at_utc_ms": 1794025388789,
+          "started_at_utc": "2026-11-07T04:23:08.789Z",
+          "transmitted_at_utc_ms": 1794025388789,
+          "outcome": "succeeded",
+          "http_status": 200,
+          "bytes": 211839,
+          "date_header": "Sat, 07 Nov 2026 04:23:09 GMT",
+          "date_header_ms": 1794025389000,
+          "content_type": "application/json",
+          "content_encoding": null,
+          "response_headers_sanitized": {
+            "Date": "Sat, 07 Nov 2026 04:23:09 GMT",
+            "Server": "Apache",
+            "Content-Type": "application/json",
+            "Via": "1.1 developer.trimet.org",
+            "Vary": "Accept-Encoding",
+            "X-Frame-Options": "SAMEORIGIN",
+            "Access-Control-Allow-Origin": "*",
+            "Keep-Alive": "timeout=10, max=14",
+            "Connection": "Keep-Alive",
+            "Transfer-Encoding": "chunked",
+            "Strict-Transport-Security": "max-age=31536000"
+          },
+          "finished_at_utc_ms": 1794025389173
+        },
+        "default_summary": {
+          "queryTime": 1794025388736,
+          "total": 305,
+          "rail": 79
+        },
+        "showStale_summary": {
+          "queryTime": 1794025389104,
+          "total": 335,
+          "rail": 99
+        },
+        "stale_only_count": 30,
+        "stale_only_sample": [
+          {
+            "vehicleID": 202,
+            "type": "rail",
+            "routeNumber": 100,
+            "expires": 1794019389000,
+            "expires_iso": "2026-11-07T02:43:09.000Z",
+            "time": 1794018634102,
+            "expired_by_ms_at_queryTime": 6000104,
+            "time_age_ms": 6755002
+          },
+          {
+            "vehicleID": 204,
+            "type": "rail",
+            "routeNumber": 290,
+            "expires": 1793975104000,
+            "expires_iso": "2026-11-06T14:25:04.000Z",
+            "time": 1793974329246,
+            "expired_by_ms_at_queryTime": 50285104,
+            "time_age_ms": 51059858
+          },
+          {
+            "vehicleID": 206,
+            "type": "rail",
+            "routeNumber": 90,
+            "expires": 1794023748000,
+            "expires_iso": "2026-11-07T03:55:48.000Z",
+            "time": 1794023009059,
+            "expired_by_ms_at_queryTime": 1641104,
+            "time_age_ms": 2380045
+          },
+          {
+            "vehicleID": 209,
+            "type": "rail",
+            "routeNumber": 100,
+            "expires": 1794017518000,
+            "expires_iso": "2026-11-07T02:11:58.000Z",
+            "time": 1794016472511,
+            "expired_by_ms_at_queryTime": 7871104,
+            "time_age_ms": 8916593
+          },
+          {
+            "vehicleID": 213,
+            "type": "rail",
+            "routeNumber": 100,
+            "expires": 1794024956008,
+            "expires_iso": "2026-11-07T04:15:56.008Z",
+            "time": 1794024356008,
+            "expired_by_ms_at_queryTime": 433096,
+            "time_age_ms": 1033096
+          },
+          {
+            "vehicleID": 215,
+            "type": "rail",
+            "routeNumber": 90,
+            "expires": 1794023748000,
+            "expires_iso": "2026-11-07T03:55:48.000Z",
+            "time": 1794023009059,
+            "expired_by_ms_at_queryTime": 1641104,
+            "time_age_ms": 2380045
+          },
+          {
+            "vehicleID": 225,
+            "type": "rail",
+            "routeNumber": 100,
+            "expires": 1793958692177,
+            "expires_iso": "2026-11-06T09:51:32.177Z",
+            "time": 1793958092177,
+            "expired_by_ms_at_queryTime": 66696927,
+            "time_age_ms": 67296927
+          },
+          {
+            "vehicleID": 244,
+            "type": "rail",
+            "routeNumber": 100,
+            "expires": 1794017518000,
+            "expires_iso": "2026-11-07T02:11:58.000Z",
+            "time": 1794016472511,
+            "expired_by_ms_at_queryTime": 7871104,
+            "time_age_ms": 8916593
+          },
+          {
+            "vehicleID": 303,
+            "type": "rail",
+            "routeNumber": 100,
+            "expires": 1794019389000,
+            "expires_iso": "2026-11-07T02:43:09.000Z",
+            "time": 1794018634102,
+            "expired_by_ms_at_queryTime": 6000104,
+            "time_age_ms": 6755002
+          },
+          {
+            "vehicleID": 309,
+            "type": "rail",
+            "routeNumber": 100,
+            "expires": 1793958692177,
+            "expires_iso": "2026-11-06T09:51:32.177Z",
+            "time": 1793958092177,
+            "expired_by_ms_at_queryTime": 66696927,
+            "time_age_ms": 67296927
+          },
+          {
+            "vehicleID": 315,
+            "type": "rail",
+            "routeNumber": 100,
+            "expires": 1794024956008,
+            "expires_iso": "2026-11-07T04:15:56.008Z",
+            "time": 1794024356008,
+            "expired_by_ms_at_queryTime": 433096,
+            "time_age_ms": 1033096
+          },
+          {
+            "vehicleID": 326,
+            "type": "rail",
+            "routeNumber": 290,
+            "expires": 1793975104000,
+            "expires_iso": "2026-11-06T14:25:04.000Z",
+            "time": 1793974329246,
+            "expired_by_ms_at_queryTime": 50285104,
+            "time_age_ms": 51059858
+          },
+          {
+            "vehicleID": 401,
+            "type": "rail",
+            "routeNumber": 90,
+            "expires": 1793974769000,
+            "expires_iso": "2026-11-06T14:19:29.000Z",
+            "time": 1793973912870,
+            "expired_by_ms_at_queryTime": 50620104,
+            "time_age_ms": 51476234
+          },
+          {
+            "vehicleID": 408,
+            "type": "rail",
+            "routeNumber": 90,
+            "expires": 1794023746000,
+            "expires_iso": "2026-11-07T03:55:46.000Z",
+            "time": 1794022857819,
+            "expired_by_ms_at_queryTime": 1643104,
+            "time_age_ms": 2531285
+          },
+          {
+            "vehicleID": 409,
+            "type": "rail",
+            "routeNumber": 90,
+            "expires": 1794023746000,
+            "expires_iso": "2026-11-07T03:55:46.000Z",
+            "time": 1794022857819,
+            "expired_by_ms_at_queryTime": 1643104,
+            "time_age_ms": 2531285
+          },
+          {
+            "vehicleID": 421,
+            "type": "rail",
+            "routeNumber": 90,
+            "expires": 1793974769000,
+            "expires_iso": "2026-11-06T14:19:29.000Z",
+            "time": 1793973912870,
+            "expired_by_ms_at_queryTime": 50620104,
+            "time_age_ms": 51476234
+          },
+          {
+            "vehicleID": 524,
+            "type": "rail",
+            "routeNumber": 90,
+            "expires": 1794025301000,
+            "expires_iso": "2026-11-07T04:21:41.000Z",
+            "time": 1794024451026,
+            "expired_by_ms_at_queryTime": 88104,
+            "time_age_ms": 938078
+          },
+          {
+            "vehicleID": 531,
+            "type": "rail",
+            "routeNumber": 90,
+            "expires": 1794025301000,
+            "expires_iso": "2026-11-07T04:21:41.000Z",
+            "time": 1794024451026,
+            "expired_by_ms_at_queryTime": 88104,
+            "time_age_ms": 938078
+          },
+          {
+            "vehicleID": 604,
+            "type": "rail",
+            "routeNumber": 90,
+            "expires": 1793992682000,
+            "expires_iso": "2026-11-06T19:18:02.000Z",
+            "time": 1793991913092,
+            "expired_by_ms_at_queryTime": 32707104,
+            "time_age_ms": 33476012
+          },
+          {
+            "vehicleID": 612,
+            "type": "rail",
+            "routeNumber": 90,
+            "expires": 1793992682000,
+            "expires_iso": "2026-11-06T19:18:02.000Z",
+            "time": 1793991913092,
+            "expired_by_ms_at_queryTime": 32707104,
+            "time_age_ms": 33476012
+          }
+        ]
+      },
+      {
+        "pair_index": 1,
+        "default": {
+          "tag": "B6",
+          "kind": "base",
+          "url_redacted": "https://developer.trimet.org/ws/v2/vehicles",
+          "started_at_utc_ms": 1794025409180,
+          "started_at_utc": "2026-11-07T04:23:29.180Z",
+          "transmitted_at_utc_ms": 1794025409180,
+          "outcome": "succeeded",
+          "http_status": 200,
+          "bytes": 192082,
+          "date_header": "Sat, 07 Nov 2026 04:23:29 GMT",
+          "date_header_ms": 1794025409000,
+          "content_type": "application/json",
+          "content_encoding": null,
+          "response_headers_sanitized": {
+            "Date": "Sat, 07 Nov 2026 04:23:29 GMT",
+            "Server": "Apache",
+            "Content-Type": "application/json",
+            "Via": "1.1 developer.trimet.org",
+            "Vary": "Accept-Encoding",
+            "X-Frame-Options": "SAMEORIGIN",
+            "Access-Control-Allow-Origin": "*",
+            "Keep-Alive": "timeout=10, max=87",
+            "Connection": "Keep-Alive",
+            "Transfer-Encoding": "chunked",
+            "Strict-Transport-Security": "max-age=31536000"
+          },
+          "finished_at_utc_ms": 1794025409607
+        },
+        "showStale": {
+          "tag": "B6",
+          "kind": "base",
+          "url_redacted": "https://developer.trimet.org/ws/v2/vehicles",
+          "started_at_utc_ms": 1794025409614,
+          "started_at_utc": "2026-11-07T04:23:29.614Z",
+          "transmitted_at_utc_ms": 1794025409614,
+          "outcome": "succeeded",
+          "http_status": 200,
+          "bytes": 211135,
+          "date_header": "Sat, 07 Nov 2026 04:23:29 GMT",
+          "date_header_ms": 1794025409000,
+          "content_type": "application/json",
+          "content_encoding": null,
+          "response_headers_sanitized": {
+            "Date": "Sat, 07 Nov 2026 04:23:29 GMT",
+            "Server": "Apache",
+            "Content-Type": "application/json",
+            "Via": "1.1 developer.trimet.org",
+            "Vary": "Accept-Encoding",
+            "X-Frame-Options": "SAMEORIGIN",
+            "Access-Control-Allow-Origin": "*",
+            "Keep-Alive": "timeout=10, max=70",
+            "Connection": "Keep-Alive",
+            "Transfer-Encoding": "chunked",
+            "Strict-Transport-Security": "max-age=31536000"
+          },
+          "finished_at_utc_ms": 1794025409897
+        },
+        "default_summary": {
+          "queryTime": 1794025409450,
+          "total": 304,
+          "rail": 79
+        },
+        "showStale_summary": {
+          "queryTime": 1794025409885,
+          "total": 334,
+          "rail": 99
+        },
+        "stale_only_count": 30,
+        "stale_only_sample": [
+          {
+            "vehicleID": 202,
+            "type": "rail",
+            "routeNumber": 100,
+            "expires": 1794019389000,
+            "expires_iso": "2026-11-07T02:43:09.000Z",
+            "time": 1794018634102,
+            "expired_by_ms_at_queryTime": 6020885,
+            "time_age_ms": 6775783
+          },
+          {
+            "vehicleID": 204,
+            "type": "rail",
+            "routeNumber": 290,
+            "expires": 1793975104000,
+            "expires_iso": "2026-11-06T14:25:04.000Z",
+            "time": 1793974329246,
+            "expired_by_ms_at_queryTime": 50305885,
+            "time_age_ms": 51080639
+          },
+          {
+            "vehicleID": 206,
+            "type": "rail",
+            "routeNumber": 90,
+            "expires": 1794023748000,
+            "expires_iso": "2026-11-07T03:55:48.000Z",
+            "time": 1794023009059,
+            "expired_by_ms_at_queryTime": 1661885,
+            "time_age_ms": 2400826
+          },
+          {
+            "vehicleID": 209,
+            "type": "rail",
+            "routeNumber": 100,
+            "expires": 1794017518000,
+            "expires_iso": "2026-11-07T02:11:58.000Z",
+            "time": 1794016472511,
+            "expired_by_ms_at_queryTime": 7891885,
+            "time_age_ms": 8937374
+          },
+          {
+            "vehicleID": 213,
+            "type": "rail",
+            "routeNumber": 100,
+            "expires": 1794024956008,
+            "expires_iso": "2026-11-07T04:15:56.008Z",
+            "time": 1794024356008,
+            "expired_by_ms_at_queryTime": 453877,
+            "time_age_ms": 1053877
+          },
+          {
+            "vehicleID": 215,
+            "type": "rail",
+            "routeNumber": 90,
+            "expires": 1794023748000,
+            "expires_iso": "2026-11-07T03:55:48.000Z",
+            "time": 1794023009059,
+            "expired_by_ms_at_queryTime": 1661885,
+            "time_age_ms": 2400826
+          },
+          {
+            "vehicleID": 225,
+            "type": "rail",
+            "routeNumber": 100,
+            "expires": 1793958692177,
+            "expires_iso": "2026-11-06T09:51:32.177Z",
+            "time": 1793958092177,
+            "expired_by_ms_at_queryTime": 66717708,
+            "time_age_ms": 67317708
+          },
+          {
+            "vehicleID": 244,
+            "type": "rail",
+            "routeNumber": 100,
+            "expires": 1794017518000,
+            "expires_iso": "2026-11-07T02:11:58.000Z",
+            "time": 1794016472511,
+            "expired_by_ms_at_queryTime": 7891885,
+            "time_age_ms": 8937374
+          },
+          {
+            "vehicleID": 303,
+            "type": "rail",
+            "routeNumber": 100,
+            "expires": 1794019389000,
+            "expires_iso": "2026-11-07T02:43:09.000Z",
+            "time": 1794018634102,
+            "expired_by_ms_at_queryTime": 6020885,
+            "time_age_ms": 6775783
+          },
+          {
+            "vehicleID": 309,
+            "type": "rail",
+            "routeNumber": 100,
+            "expires": 1793958692177,
+            "expires_iso": "2026-11-06T09:51:32.177Z",
+            "time": 1793958092177,
+            "expired_by_ms_at_queryTime": 66717708,
+            "time_age_ms": 67317708
+          },
+          {
+            "vehicleID": 315,
+            "type": "rail",
+            "routeNumber": 100,
+            "expires": 1794024956008,
+            "expires_iso": "2026-11-07T04:15:56.008Z",
+            "time": 1794024356008,
+            "expired_by_ms_at_queryTime": 453877,
+            "time_age_ms": 1053877
+          },
+          {
+            "vehicleID": 326,
+            "type": "rail",
+            "routeNumber": 290,
+            "expires": 1793975104000,
+            "expires_iso": "2026-11-06T14:25:04.000Z",
+            "time": 1793974329246,
+            "expired_by_ms_at_queryTime": 50305885,
+            "time_age_ms": 51080639
+          },
+          {
+            "vehicleID": 401,
+            "type": "rail",
+            "routeNumber": 90,
+            "expires": 1793974769000,
+            "expires_iso": "2026-11-06T14:19:29.000Z",
+            "time": 1793973912870,
+            "expired_by_ms_at_queryTime": 50640885,
+            "time_age_ms": 51497015
+          },
+          {
+            "vehicleID": 408,
+            "type": "rail",
+            "routeNumber": 90,
+            "expires": 1794023746000,
+            "expires_iso": "2026-11-07T03:55:46.000Z",
+            "time": 1794022857819,
+            "expired_by_ms_at_queryTime": 1663885,
+            "time_age_ms": 2552066
+          },
+          {
+            "vehicleID": 409,
+            "type": "rail",
+            "routeNumber": 90,
+            "expires": 1794023746000,
+            "expires_iso": "2026-11-07T03:55:46.000Z",
+            "time": 1794022857819,
+            "expired_by_ms_at_queryTime": 1663885,
+            "time_age_ms": 2552066
+          },
+          {
+            "vehicleID": 421,
+            "type": "rail",
+            "routeNumber": 90,
+            "expires": 1793974769000,
+            "expires_iso": "2026-11-06T14:19:29.000Z",
+            "time": 1793973912870,
+            "expired_by_ms_at_queryTime": 50640885,
+            "time_age_ms": 51497015
+          },
+          {
+            "vehicleID": 524,
+            "type": "rail",
+            "routeNumber": 90,
+            "expires": 1794025301000,
+            "expires_iso": "2026-11-07T04:21:41.000Z",
+            "time": 1794024451026,
+            "expired_by_ms_at_queryTime": 108885,
+            "time_age_ms": 958859
+          },
+          {
+            "vehicleID": 531,
+            "type": "rail",
+            "routeNumber": 90,
+            "expires": 1794025301000,
+            "expires_iso": "2026-11-07T04:21:41.000Z",
+            "time": 1794024451026,
+            "expired_by_ms_at_queryTime": 108885,
+            "time_age_ms": 958859
+          },
+          {
+            "vehicleID": 604,
+            "type": "rail",
+            "routeNumber": 90,
+            "expires": 1793992682000,
+            "expires_iso": "2026-11-06T19:18:02.000Z",
+            "time": 1793991913092,
+            "expired_by_ms_at_queryTime": 32727885,
+            "time_age_ms": 33496793
+          },
+          {
+            "vehicleID": 612,
+            "type": "rail",
+            "routeNumber": 90,
+            "expires": 1793992682000,
+            "expires_iso": "2026-11-06T19:18:02.000Z",
+            "time": 1793991913092,
+            "expired_by_ms_at_queryTime": 32727885,
+            "time_age_ms": 33496793
+          }
+        ]
+      },
+      {
+        "pair_index": 2,
+        "default": {
+          "tag": "B6",
+          "kind": "base",
+          "url_redacted": "https://developer.trimet.org/ws/v2/vehicles",
+          "started_at_utc_ms": 1794025429903,
+          "started_at_utc": "2026-11-07T04:23:49.903Z",
+          "transmitted_at_utc_ms": 1794025429903,
+          "outcome": "succeeded",
+          "http_status": 200,
+          "bytes": 191475,
+          "date_header": "Sat, 07 Nov 2026 04:23:50 GMT",
+          "date_header_ms": 1794025430000,
+          "content_type": "application/json",
+          "content_encoding": null,
+          "response_headers_sanitized": {
+            "Date": "Sat, 07 Nov 2026 04:23:50 GMT",
+            "Server": "Apache",
+            "Content-Type": "application/json",
+            "Via": "1.1 developer.trimet.org",
+            "Vary": "Accept-Encoding",
+            "X-Frame-Options": "SAMEORIGIN",
+            "Access-Control-Allow-Origin": "*",
+            "Keep-Alive": "timeout=10, max=5",
+            "Connection": "Keep-Alive",
+            "Transfer-Encoding": "chunked",
+            "Strict-Transport-Security": "max-age=31536000"
+          },
+          "finished_at_utc_ms": 1794025430226
+        },
+        "showStale": {
+          "tag": "B6",
+          "kind": "base",
+          "url_redacted": "https://developer.trimet.org/ws/v2/vehicles",
+          "started_at_utc_ms": 1794025430230,
+          "started_at_utc": "2026-11-07T04:23:50.230Z",
+          "transmitted_at_utc_ms": 1794025430230,
+          "outcome": "succeeded",
+          "http_status": 200,
+          "bytes": 210530,
+          "date_header": "Sat, 07 Nov 2026 04:23:50 GMT",
+          "date_header_ms": 1794025430000,
+          "content_type": "application/json",
+          "content_encoding": null,
+          "response_headers_sanitized": {
+            "Date": "Sat, 07 Nov 2026 04:23:50 GMT",
+            "Server": "Apache",
+            "Content-Type": "application/json",
+            "Via": "1.1 developer.trimet.org",
+            "Vary": "Accept-Encoding",
+            "X-Frame-Options": "SAMEORIGIN",
+            "Access-Control-Allow-Origin": "*",
+            "Keep-Alive": "timeout=10, max=100",
+            "Connection": "Keep-Alive",
+            "Transfer-Encoding": "chunked",
+            "Strict-Transport-Security": "max-age=31536000"
+          },
+          "finished_at_utc_ms": 1794025430553
+        },
+        "default_summary": {
+          "queryTime": 1794025430192,
+          "total": 303,
+          "rail": 79
+        },
+        "showStale_summary": {
+          "queryTime": 1794025430488,
+          "total": 333,
+          "rail": 99
+        },
+        "stale_only_count": 30,
+        "stale_only_sample": [
+          {
+            "vehicleID": 202,
+            "type": "rail",
+            "routeNumber": 100,
+            "expires": 1794019389000,
+            "expires_iso": "2026-11-07T02:43:09.000Z",
+            "time": 1794018634102,
+            "expired_by_ms_at_queryTime": 6041488,
+            "time_age_ms": 6796386
+          },
+          {
+            "vehicleID": 204,
+            "type": "rail",
+            "routeNumber": 290,
+            "expires": 1793975104000,
+            "expires_iso": "2026-11-06T14:25:04.000Z",
+            "time": 1793974329246,
+            "expired_by_ms_at_queryTime": 50326488,
+            "time_age_ms": 51101242
+          },
+          {
+            "vehicleID": 206,
+            "type": "rail",
+            "routeNumber": 90,
+            "expires": 1794023748000,
+            "expires_iso": "2026-11-07T03:55:48.000Z",
+            "time": 1794023009059,
+            "expired_by_ms_at_queryTime": 1682488,
+            "time_age_ms": 2421429
+          },
+          {
+            "vehicleID": 209,
+            "type": "rail",
+            "routeNumber": 100,
+            "expires": 1794017518000,
+            "expires_iso": "2026-11-07T02:11:58.000Z",
+            "time": 1794016472511,
+            "expired_by_ms_at_queryTime": 7912488,
+            "time_age_ms": 8957977
+          },
+          {
+            "vehicleID": 213,
+            "type": "rail",
+            "routeNumber": 100,
+            "expires": 1794024956008,
+            "expires_iso": "2026-11-07T04:15:56.008Z",
+            "time": 1794024356008,
+            "expired_by_ms_at_queryTime": 474480,
+            "time_age_ms": 1074480
+          },
+          {
+            "vehicleID": 215,
+            "type": "rail",
+            "routeNumber": 90,
+            "expires": 1794023748000,
+            "expires_iso": "2026-11-07T03:55:48.000Z",
+            "time": 1794023009059,
+            "expired_by_ms_at_queryTime": 1682488,
+            "time_age_ms": 2421429
+          },
+          {
+            "vehicleID": 225,
+            "type": "rail",
+            "routeNumber": 100,
+            "expires": 1793958692177,
+            "expires_iso": "2026-11-06T09:51:32.177Z",
+            "time": 1793958092177,
+            "expired_by_ms_at_queryTime": 66738311,
+            "time_age_ms": 67338311
+          },
+          {
+            "vehicleID": 244,
+            "type": "rail",
+            "routeNumber": 100,
+            "expires": 1794017518000,
+            "expires_iso": "2026-11-07T02:11:58.000Z",
+            "time": 1794016472511,
+            "expired_by_ms_at_queryTime": 7912488,
+            "time_age_ms": 8957977
+          },
+          {
+            "vehicleID": 303,
+            "type": "rail",
+            "routeNumber": 100,
+            "expires": 1794019389000,
+            "expires_iso": "2026-11-07T02:43:09.000Z",
+            "time": 1794018634102,
+            "expired_by_ms_at_queryTime": 6041488,
+            "time_age_ms": 6796386
+          },
+          {
+            "vehicleID": 309,
+            "type": "rail",
+            "routeNumber": 100,
+            "expires": 1793958692177,
+            "expires_iso": "2026-11-06T09:51:32.177Z",
+            "time": 1793958092177,
+            "expired_by_ms_at_queryTime": 66738311,
+            "time_age_ms": 67338311
+          },
+          {
+            "vehicleID": 315,
+            "type": "rail",
+            "routeNumber": 100,
+            "expires": 1794024956008,
+            "expires_iso": "2026-11-07T04:15:56.008Z",
+            "time": 1794024356008,
+            "expired_by_ms_at_queryTime": 474480,
+            "time_age_ms": 1074480
+          },
+          {
+            "vehicleID": 326,
+            "type": "rail",
+            "routeNumber": 290,
+            "expires": 1793975104000,
+            "expires_iso": "2026-11-06T14:25:04.000Z",
+            "time": 1793974329246,
+            "expired_by_ms_at_queryTime": 50326488,
+            "time_age_ms": 51101242
+          },
+          {
+            "vehicleID": 401,
+            "type": "rail",
+            "routeNumber": 90,
+            "expires": 1793974769000,
+            "expires_iso": "2026-11-06T14:19:29.000Z",
+            "time": 1793973912870,
+            "expired_by_ms_at_queryTime": 50661488,
+            "time_age_ms": 51517618
+          },
+          {
+            "vehicleID": 408,
+            "type": "rail",
+            "routeNumber": 90,
+            "expires": 1794023746000,
+            "expires_iso": "2026-11-07T03:55:46.000Z",
+            "time": 1794022857819,
+            "expired_by_ms_at_queryTime": 1684488,
+            "time_age_ms": 2572669
+          },
+          {
+            "vehicleID": 409,
+            "type": "rail",
+            "routeNumber": 90,
+            "expires": 1794023746000,
+            "expires_iso": "2026-11-07T03:55:46.000Z",
+            "time": 1794022857819,
+            "expired_by_ms_at_queryTime": 1684488,
+            "time_age_ms": 2572669
+          },
+          {
+            "vehicleID": 421,
+            "type": "rail",
+            "routeNumber": 90,
+            "expires": 1793974769000,
+            "expires_iso": "2026-11-06T14:19:29.000Z",
+            "time": 1793973912870,
+            "expired_by_ms_at_queryTime": 50661488,
+            "time_age_ms": 51517618
+          },
+          {
+            "vehicleID": 524,
+            "type": "rail",
+            "routeNumber": 90,
+            "expires": 1794025301000,
+            "expires_iso": "2026-11-07T04:21:41.000Z",
+            "time": 1794024451026,
+            "expired_by_ms_at_queryTime": 129488,
+            "time_age_ms": 979462
+          },
+          {
+            "vehicleID": 531,
+            "type": "rail",
+            "routeNumber": 90,
+            "expires": 1794025301000,
+            "expires_iso": "2026-11-07T04:21:41.000Z",
+            "time": 1794024451026,
+            "expired_by_ms_at_queryTime": 129488,
+            "time_age_ms": 979462
+          },
+          {
+            "vehicleID": 604,
+            "type": "rail",
+            "routeNumber": 90,
+            "expires": 1793992682000,
+            "expires_iso": "2026-11-06T19:18:02.000Z",
+            "time": 1793991913092,
+            "expired_by_ms_at_queryTime": 32748488,
+            "time_age_ms": 33517396
+          },
+          {
+            "vehicleID": 612,
+            "type": "rail",
+            "routeNumber": 90,
+            "expires": 1793992682000,
+            "expires_iso": "2026-11-06T19:18:02.000Z",
+            "time": 1793991913092,
+            "expired_by_ms_at_queryTime": 32748488,
+            "time_age_ms": 33517396
+          }
+        ]
+      },
+      {
+        "pair_index": 3,
+        "default": {
+          "tag": "B6",
+          "kind": "base",
+          "url_redacted": "https://developer.trimet.org/ws/v2/vehicles",
+          "started_at_utc_ms": 1794025450559,
+          "started_at_utc": "2026-11-07T04:24:10.559Z",
+          "transmitted_at_utc_ms": 1794025450559,
+          "outcome": "succeeded",
+          "http_status": 200,
+          "bytes": 190819,
+          "date_header": "Sat, 07 Nov 2026 04:24:10 GMT",
+          "date_header_ms": 1794025450000,
+          "content_type": "application/json",
+          "content_encoding": null,
+          "response_headers_sanitized": {
+            "Date": "Sat, 07 Nov 2026 04:24:10 GMT",
+            "Server": "Apache",
+            "Content-Type": "application/json",
+            "Via": "1.1 developer.trimet.org",
+            "Vary": "Accept-Encoding",
+            "X-Frame-Options": "SAMEORIGIN",
+            "Access-Control-Allow-Origin": "*",
+            "Keep-Alive": "timeout=10, max=30",
+            "Connection": "Keep-Alive",
+            "Transfer-Encoding": "chunked",
+            "Strict-Transport-Security": "max-age=31536000"
+          },
+          "finished_at_utc_ms": 1794025451041
+        },
+        "showStale": {
+          "tag": "B6",
+          "kind": "base",
+          "url_redacted": "https://developer.trimet.org/ws/v2/vehicles",
+          "started_at_utc_ms": 1794025451047,
+          "started_at_utc": "2026-11-07T04:24:11.047Z",
+          "transmitted_at_utc_ms": 1794025451047,
+          "outcome": "succeeded",
+          "http_status": 200,
+          "bytes": 209872,
+          "date_header": "Sat, 07 Nov 2026 04:24:11 GMT",
+          "date_header_ms": 1794025451000,
+          "content_type": "application/json",
+          "content_encoding": null,
+          "response_headers_sanitized": {
+            "Date": "Sat, 07 Nov 2026 04:24:11 GMT",
+            "Server": "Apache",
+            "Content-Type": "application/json",
+            "Via": "1.1 developer.trimet.org",
+            "Vary": "Accept-Encoding",
+            "X-Frame-Options": "SAMEORIGIN",
+            "Access-Control-Allow-Origin": "*",
+            "Keep-Alive": "timeout=10, max=93",
+            "Connection": "Keep-Alive",
+            "Transfer-Encoding": "chunked",
+            "Strict-Transport-Security": "max-age=31536000"
+          },
+          "finished_at_utc_ms": 1794025451373
+        },
+        "default_summary": {
+          "queryTime": 1794025450840,
+          "total": 302,
+          "rail": 79
+        },
+        "showStale_summary": {
+          "queryTime": 1794025451354,
+          "total": 332,
+          "rail": 99
+        },
+        "stale_only_count": 30,
+        "stale_only_sample": [
+          {
+            "vehicleID": 202,
+            "type": "rail",
+            "routeNumber": 100,
+            "expires": 1794019389000,
+            "expires_iso": "2026-11-07T02:43:09.000Z",
+            "time": 1794018634102,
+            "expired_by_ms_at_queryTime": 6062354,
+            "time_age_ms": 6817252
+          },
+          {
+            "vehicleID": 204,
+            "type": "rail",
+            "routeNumber": 290,
+            "expires": 1793975104000,
+            "expires_iso": "2026-11-06T14:25:04.000Z",
+            "time": 1793974329246,
+            "expired_by_ms_at_queryTime": 50347354,
+            "time_age_ms": 51122108
+          },
+          {
+            "vehicleID": 206,
+            "type": "rail",
+            "routeNumber": 90,
+            "expires": 1794023748000,
+            "expires_iso": "2026-11-07T03:55:48.000Z",
+            "time": 1794023009059,
+            "expired_by_ms_at_queryTime": 1703354,
+            "time_age_ms": 2442295
+          },
+          {
+            "vehicleID": 209,
+            "type": "rail",
+            "routeNumber": 100,
+            "expires": 1794017518000,
+            "expires_iso": "2026-11-07T02:11:58.000Z",
+            "time": 1794016472511,
+            "expired_by_ms_at_queryTime": 7933354,
+            "time_age_ms": 8978843
+          },
+          {
+            "vehicleID": 213,
+            "type": "rail",
+            "routeNumber": 100,
+            "expires": 1794024956008,
+            "expires_iso": "2026-11-07T04:15:56.008Z",
+            "time": 1794024356008,
+            "expired_by_ms_at_queryTime": 495346,
+            "time_age_ms": 1095346
+          },
+          {
+            "vehicleID": 215,
+            "type": "rail",
+            "routeNumber": 90,
+            "expires": 1794023748000,
+            "expires_iso": "2026-11-07T03:55:48.000Z",
+            "time": 1794023009059,
+            "expired_by_ms_at_queryTime": 1703354,
+            "time_age_ms": 2442295
+          },
+          {
+            "vehicleID": 225,
+            "type": "rail",
+            "routeNumber": 100,
+            "expires": 1793958692177,
+            "expires_iso": "2026-11-06T09:51:32.177Z",
+            "time": 1793958092177,
+            "expired_by_ms_at_queryTime": 66759177,
+            "time_age_ms": 67359177
+          },
+          {
+            "vehicleID": 244,
+            "type": "rail",
+            "routeNumber": 100,
+            "expires": 1794017518000,
+            "expires_iso": "2026-11-07T02:11:58.000Z",
+            "time": 1794016472511,
+            "expired_by_ms_at_queryTime": 7933354,
+            "time_age_ms": 8978843
+          },
+          {
+            "vehicleID": 303,
+            "type": "rail",
+            "routeNumber": 100,
+            "expires": 1794019389000,
+            "expires_iso": "2026-11-07T02:43:09.000Z",
+            "time": 1794018634102,
+            "expired_by_ms_at_queryTime": 6062354,
+            "time_age_ms": 6817252
+          },
+          {
+            "vehicleID": 309,
+            "type": "rail",
+            "routeNumber": 100,
+            "expires": 1793958692177,
+            "expires_iso": "2026-11-06T09:51:32.177Z",
+            "time": 1793958092177,
+            "expired_by_ms_at_queryTime": 66759177,
+            "time_age_ms": 67359177
+          },
+          {
+            "vehicleID": 315,
+            "type": "rail",
+            "routeNumber": 100,
+            "expires": 1794024956008,
+            "expires_iso": "2026-11-07T04:15:56.008Z",
+            "time": 1794024356008,
+            "expired_by_ms_at_queryTime": 495346,
+            "time_age_ms": 1095346
+          },
+          {
+            "vehicleID": 326,
+            "type": "rail",
+            "routeNumber": 290,
+            "expires": 1793975104000,
+            "expires_iso": "2026-11-06T14:25:04.000Z",
+            "time": 1793974329246,
+            "expired_by_ms_at_queryTime": 50347354,
+            "time_age_ms": 51122108
+          },
+          {
+            "vehicleID": 401,
+            "type": "rail",
+            "routeNumber": 90,
+            "expires": 1793974769000,
+            "expires_iso": "2026-11-06T14:19:29.000Z",
+            "time": 1793973912870,
+            "expired_by_ms_at_queryTime": 50682354,
+            "time_age_ms": 51538484
+          },
+          {
+            "vehicleID": 408,
+            "type": "rail",
+            "routeNumber": 90,
+            "expires": 1794023746000,
+            "expires_iso": "2026-11-07T03:55:46.000Z",
+            "time": 1794022857819,
+            "expired_by_ms_at_queryTime": 1705354,
+            "time_age_ms": 2593535
+          },
+          {
+            "vehicleID": 409,
+            "type": "rail",
+            "routeNumber": 90,
+            "expires": 1794023746000,
+            "expires_iso": "2026-11-07T03:55:46.000Z",
+            "time": 1794022857819,
+            "expired_by_ms_at_queryTime": 1705354,
+            "time_age_ms": 2593535
+          },
+          {
+            "vehicleID": 421,
+            "type": "rail",
+            "routeNumber": 90,
+            "expires": 1793974769000,
+            "expires_iso": "2026-11-06T14:19:29.000Z",
+            "time": 1793973912870,
+            "expired_by_ms_at_queryTime": 50682354,
+            "time_age_ms": 51538484
+          },
+          {
+            "vehicleID": 524,
+            "type": "rail",
+            "routeNumber": 90,
+            "expires": 1794025301000,
+            "expires_iso": "2026-11-07T04:21:41.000Z",
+            "time": 1794024451026,
+            "expired_by_ms_at_queryTime": 150354,
+            "time_age_ms": 1000328
+          },
+          {
+            "vehicleID": 531,
+            "type": "rail",
+            "routeNumber": 90,
+            "expires": 1794025301000,
+            "expires_iso": "2026-11-07T04:21:41.000Z",
+            "time": 1794024451026,
+            "expired_by_ms_at_queryTime": 150354,
+            "time_age_ms": 1000328
+          },
+          {
+            "vehicleID": 604,
+            "type": "rail",
+            "routeNumber": 90,
+            "expires": 1793992682000,
+            "expires_iso": "2026-11-06T19:18:02.000Z",
+            "time": 1793991913092,
+            "expired_by_ms_at_queryTime": 32769354,
+            "time_age_ms": 33538262
+          },
+          {
+            "vehicleID": 612,
+            "type": "rail",
+            "routeNumber": 90,
+            "expires": 1793992682000,
+            "expires_iso": "2026-11-06T19:18:02.000Z",
+            "time": 1793991913092,
+            "expired_by_ms_at_queryTime": 32769354,
+            "time_age_ms": 33538262
+          }
+        ]
+      },
+      {
+        "pair_index": 4,
+        "default": {
+          "tag": "B6",
+          "kind": "base",
+          "url_redacted": "https://developer.trimet.org/ws/v2/vehicles",
+          "started_at_utc_ms": 1794025471379,
+          "started_at_utc": "2026-11-07T04:24:31.379Z",
+          "transmitted_at_utc_ms": 1794025471379,
+          "outcome": "succeeded",
+          "http_status": 200,
+          "bytes": 190228,
+          "date_header": "Sat, 07 Nov 2026 04:24:31 GMT",
+          "date_header_ms": 1794025471000,
+          "content_type": "application/json",
+          "content_encoding": null,
+          "response_headers_sanitized": {
+            "Date": "Sat, 07 Nov 2026 04:24:31 GMT",
+            "Server": "Apache",
+            "Content-Type": "application/json",
+            "Via": "1.1 developer.trimet.org",
+            "Vary": "Accept-Encoding",
+            "X-Frame-Options": "SAMEORIGIN",
+            "Access-Control-Allow-Origin": "*",
+            "Keep-Alive": "timeout=10, max=52",
+            "Connection": "Keep-Alive",
+            "Transfer-Encoding": "chunked",
+            "Strict-Transport-Security": "max-age=31536000"
+          },
+          "finished_at_utc_ms": 1794025471625
+        },
+        "showStale": {
+          "tag": "B6",
+          "kind": "base",
+          "url_redacted": "https://developer.trimet.org/ws/v2/vehicles",
+          "started_at_utc_ms": 1794025471631,
+          "started_at_utc": "2026-11-07T04:24:31.631Z",
+          "transmitted_at_utc_ms": 1794025471631,
+          "outcome": "succeeded",
+          "http_status": 200,
+          "bytes": 209281,
+          "date_header": "Sat, 07 Nov 2026 04:24:31 GMT",
+          "date_header_ms": 1794025471000,
+          "content_type": "application/json",
+          "content_encoding": null,
+          "response_headers_sanitized": {
+            "Date": "Sat, 07 Nov 2026 04:24:31 GMT",
+            "Server": "Apache",
+            "Content-Type": "application/json",
+            "Via": "1.1 developer.trimet.org",
+            "Vary": "Accept-Encoding",
+            "X-Frame-Options": "SAMEORIGIN",
+            "Access-Control-Allow-Origin": "*",
+            "Keep-Alive": "timeout=10, max=45",
+            "Connection": "Keep-Alive",
+            "Transfer-Encoding": "chunked",
+            "Strict-Transport-Security": "max-age=31536000"
+          },
+          "finished_at_utc_ms": 1794025471906
+        },
+        "default_summary": {
+          "queryTime": 1794025471644,
+          "total": 301,
+          "rail": 79
+        },
+        "showStale_summary": {
+          "queryTime": 1794025471881,
+          "total": 331,
+          "rail": 99
+        },
+        "stale_only_count": 30,
+        "stale_only_sample": [
+          {
+            "vehicleID": 202,
+            "type": "rail",
+            "routeNumber": 100,
+            "expires": 1794019389000,
+            "expires_iso": "2026-11-07T02:43:09.000Z",
+            "time": 1794018634102,
+            "expired_by_ms_at_queryTime": 6082881,
+            "time_age_ms": 6837779
+          },
+          {
+            "vehicleID": 204,
+            "type": "rail",
+            "routeNumber": 290,
+            "expires": 1793975104000,
+            "expires_iso": "2026-11-06T14:25:04.000Z",
+            "time": 1793974329246,
+            "expired_by_ms_at_queryTime": 50367881,
+            "time_age_ms": 51142635
+          },
+          {
+            "vehicleID": 206,
+            "type": "rail",
+            "routeNumber": 90,
+            "expires": 1794023748000,
+            "expires_iso": "2026-11-07T03:55:48.000Z",
+            "time": 1794023009059,
+            "expired_by_ms_at_queryTime": 1723881,
+            "time_age_ms": 2462822
+          },
+          {
+            "vehicleID": 209,
+            "type": "rail",
+            "routeNumber": 100,
+            "expires": 1794017518000,
+            "expires_iso": "2026-11-07T02:11:58.000Z",
+            "time": 1794016472511,
+            "expired_by_ms_at_queryTime": 7953881,
+            "time_age_ms": 8999370
+          },
+          {
+            "vehicleID": 213,
+            "type": "rail",
+            "routeNumber": 100,
+            "expires": 1794024956008,
+            "expires_iso": "2026-11-07T04:15:56.008Z",
+            "time": 1794024356008,
+            "expired_by_ms_at_queryTime": 515873,
+            "time_age_ms": 1115873
+          },
+          {
+            "vehicleID": 215,
+            "type": "rail",
+            "routeNumber": 90,
+            "expires": 1794023748000,
+            "expires_iso": "2026-11-07T03:55:48.000Z",
+            "time": 1794023009059,
+            "expired_by_ms_at_queryTime": 1723881,
+            "time_age_ms": 2462822
+          },
+          {
+            "vehicleID": 225,
+            "type": "rail",
+            "routeNumber": 100,
+            "expires": 1793958692177,
+            "expires_iso": "2026-11-06T09:51:32.177Z",
+            "time": 1793958092177,
+            "expired_by_ms_at_queryTime": 66779704,
+            "time_age_ms": 67379704
+          },
+          {
+            "vehicleID": 244,
+            "type": "rail",
+            "routeNumber": 100,
+            "expires": 1794017518000,
+            "expires_iso": "2026-11-07T02:11:58.000Z",
+            "time": 1794016472511,
+            "expired_by_ms_at_queryTime": 7953881,
+            "time_age_ms": 8999370
+          },
+          {
+            "vehicleID": 303,
+            "type": "rail",
+            "routeNumber": 100,
+            "expires": 1794019389000,
+            "expires_iso": "2026-11-07T02:43:09.000Z",
+            "time": 1794018634102,
+            "expired_by_ms_at_queryTime": 6082881,
+            "time_age_ms": 6837779
+          },
+          {
+            "vehicleID": 309,
+            "type": "rail",
+            "routeNumber": 100,
+            "expires": 1793958692177,
+            "expires_iso": "2026-11-06T09:51:32.177Z",
+            "time": 1793958092177,
+            "expired_by_ms_at_queryTime": 66779704,
+            "time_age_ms": 67379704
+          },
+          {
+            "vehicleID": 315,
+            "type": "rail",
+            "routeNumber": 100,
+            "expires": 1794024956008,
+            "expires_iso": "2026-11-07T04:15:56.008Z",
+            "time": 1794024356008,
+            "expired_by_ms_at_queryTime": 515873,
+            "time_age_ms": 1115873
+          },
+          {
+            "vehicleID": 326,
+            "type": "rail",
+            "routeNumber": 290,
+            "expires": 1793975104000,
+            "expires_iso": "2026-11-06T14:25:04.000Z",
+            "time": 1793974329246,
+            "expired_by_ms_at_queryTime": 50367881,
+            "time_age_ms": 51142635
+          },
+          {
+            "vehicleID": 401,
+            "type": "rail",
+            "routeNumber": 90,
+            "expires": 1793974769000,
+            "expires_iso": "2026-11-06T14:19:29.000Z",
+            "time": 1793973912870,
+            "expired_by_ms_at_queryTime": 50702881,
+            "time_age_ms": 51559011
+          },
+          {
+            "vehicleID": 408,
+            "type": "rail",
+            "routeNumber": 90,
+            "expires": 1794023746000,
+            "expires_iso": "2026-11-07T03:55:46.000Z",
+            "time": 1794022857819,
+            "expired_by_ms_at_queryTime": 1725881,
+            "time_age_ms": 2614062
+          },
+          {
+            "vehicleID": 409,
+            "type": "rail",
+            "routeNumber": 90,
+            "expires": 1794023746000,
+            "expires_iso": "2026-11-07T03:55:46.000Z",
+            "time": 1794022857819,
+            "expired_by_ms_at_queryTime": 1725881,
+            "time_age_ms": 2614062
+          },
+          {
+            "vehicleID": 421,
+            "type": "rail",
+            "routeNumber": 90,
+            "expires": 1793974769000,
+            "expires_iso": "2026-11-06T14:19:29.000Z",
+            "time": 1793973912870,
+            "expired_by_ms_at_queryTime": 50702881,
+            "time_age_ms": 51559011
+          },
+          {
+            "vehicleID": 524,
+            "type": "rail",
+            "routeNumber": 90,
+            "expires": 1794025301000,
+            "expires_iso": "2026-11-07T04:21:41.000Z",
+            "time": 1794024451026,
+            "expired_by_ms_at_queryTime": 170881,
+            "time_age_ms": 1020855
+          },
+          {
+            "vehicleID": 531,
+            "type": "rail",
+            "routeNumber": 90,
+            "expires": 1794025301000,
+            "expires_iso": "2026-11-07T04:21:41.000Z",
+            "time": 1794024451026,
+            "expired_by_ms_at_queryTime": 170881,
+            "time_age_ms": 1020855
+          },
+          {
+            "vehicleID": 604,
+            "type": "rail",
+            "routeNumber": 90,
+            "expires": 1793992682000,
+            "expires_iso": "2026-11-06T19:18:02.000Z",
+            "time": 1793991913092,
+            "expired_by_ms_at_queryTime": 32789881,
+            "time_age_ms": 33558789
+          },
+          {
+            "vehicleID": 612,
+            "type": "rail",
+            "routeNumber": 90,
+            "expires": 1793992682000,
+            "expires_iso": "2026-11-06T19:18:02.000Z",
+            "time": 1793991913092,
+            "expired_by_ms_at_queryTime": 32789881,
+            "time_age_ms": 33558789
+          }
+        ]
+      }
+    ],
+    "status": "COMPLETE"
+  },
+  "b8": {
+    "probes": [
+      {
+        "feed": "vehicles",
+        "accept_encoding": "gzip",
+        "outcome": "succeeded",
+        "http_status": 200,
+        "bytes": 24249,
+        "content_type": "application/json",
+        "content_encoding": "gzip",
+        "date_header": "Sat, 07 Nov 2026 04:24:32 GMT"
+      },
+      {
+        "feed": "vehicles",
+        "accept_encoding": "identity",
+        "outcome": "succeeded",
+        "http_status": 200,
+        "bytes": 190198,
+        "content_type": "application/json",
+        "content_encoding": null,
+        "date_header": "Sat, 07 Nov 2026 04:24:32 GMT"
+      },
+      {
+        "feed": "vehicles",
+        "variant": "trailing_slash",
+        "outcome": "succeeded",
+        "http_status": 200,
+        "bytes": 190192,
+        "content_type": "application/json",
+        "date_header": "Sat, 07 Nov 2026 04:24:32 GMT"
+      },
+      {
+        "feed": "alerts",
+        "accept_encoding": "gzip",
+        "outcome": "succeeded",
+        "http_status": 200,
+        "bytes": 4733,
+        "content_type": "application/json",
+        "content_encoding": "gzip",
+        "date_header": "Sat, 07 Nov 2026 04:24:32 GMT"
+      },
+      {
+        "feed": "alerts",
+        "accept_encoding": "identity",
+        "outcome": "succeeded",
+        "http_status": 200,
+        "bytes": 23673,
+        "content_type": "application/json",
+        "content_encoding": null,
+        "date_header": "Sat, 07 Nov 2026 04:24:33 GMT"
+      },
+      {
+        "feed": "tripupdates",
+        "accept_encoding": "gzip",
+        "outcome": "succeeded",
+        "http_status": 200,
+        "bytes": 219823,
+        "content_type": "application/grtfeed",
+        "content_encoding": null,
+        "date_header": "Sat, 07 Nov 2026 04:24:33 GMT"
+      },
+      {
+        "feed": "tripupdates",
+        "accept_encoding": "identity",
+        "outcome": "succeeded",
+        "http_status": 200,
+        "bytes": 219823,
+        "content_type": "application/grtfeed",
+        "content_encoding": null,
+        "date_header": "Sat, 07 Nov 2026 04:24:33 GMT"
+      },
+      {
+        "feed": "tripupdates",
+        "variant": "trailing_slash",
+        "outcome": "succeeded",
+        "http_status": 200,
+        "bytes": 219823,
+        "content_type": "application/grtfeed",
+        "date_header": "Sat, 07 Nov 2026 04:24:33 GMT"
+      }
+    ],
+    "status": "COMPLETE"
+  },
+  "budget_snapshot_at_end": {
+    "reserved": 101,
+    "transmitted": 101,
+    "succeeded": 101,
+    "failed": 0,
+    "retried": 0,
+    "aborted_pre_transmission": 0
+  }
+}

@@ -383,3 +383,330 @@ All four endpoints verified working with the configured AppID; all five plan ass
 behavioral evidence; quota documented-vs-unverified separation recorded; `.env` and evidence security
 verified. No later-milestone work was started (no FastAPI app, no React frontend, no pipeline, no GTFS
 loader implementation — the audit only read gtfs.zip to verify metadata and join keys).
+
+## 11. M2 contract verification (S8)
+
+- Milestone: M2, Stage S8 - Feed Contract Verification (investigation-only)
+- Status: COMPLETE — evidence collected and analyzed; owner decisions pending
+- Verification date: 2026-11-07 (Part A 03:51-04:13 UTC; coordinated window 04:16-04:26 UTC; Part B 04:27-04:31 UTC)
+- Executed by: agent executing S8, using `tools/s8_contract/probe_s8.py`
+- Total TriMet HTTP requests issued by S8: **101** (hard cap 150; base allocation 101/110 used,
+  retry pool 0/20, reserve 0/20; every request transmitted exactly once — zero failures, zero
+  retries, zero ambiguous outcomes). Per-investigation reconciliation is in
+  `tools/s8_contract/evidence/request_budget.json`.
+- All evidence files: `tools/s8_contract/evidence/*.json` plus raw TripUpdate protobuf captures
+  (`tripupdate_capture_01..10.bin`, credential-free by construction). AppID scan of every file
+  under `tools/s8_contract/`: zero occurrences.
+- Governor verification: all ten dry-run checks passed against a loopback server before any live
+  request (`evidence/governor_dryrun.json`); zero live requests were used for verification.
+
+### 11.1 Part A — re-verification of M0 findings
+
+| # | Item | Verdict | Evidence / notes |
+|---|---|---|---|
+| A1 | Vehicles schema | **UNCHANGED** | 30 keys, identical set to M0 (`a_reverify.json`); plain keys, zero `@`-prefixed keys; key presence confirmed across all 323 vehicles |
+| A2 | Timestamp units | **UNCHANGED** | `queryTime`/`time`/`expires` all ms-since-epoch; clock skew: local − queryTime +25/+48 ms; HTTP `Date` − queryTime −163/−458 ms (Date has 1 s resolution) |
+| A3 | `expires` semantics | **UNCHANGED** | 3 rail vehicles followed through expiry: default feed omitted all three at +3.7-4.3 s past expiry; `showStale=true` re-included them (rail 79→99); `expires` did not extend pre-expiry (3/3); horizon (`expires − time`) 600.0-1885.6 s across the campaign (M0: 600-1844 s) |
+| A4 | `since=` behavior | **UNCHANGED (stronger)** | Not strictly incremental, more pronounced than M0: follow-up 1 returned 195 vehicles of which **106 had `time ≤ since`** (M0: 11/48); follow-up 2: 9/137. Merge-by-`vehicleID` design confirmed; absence from an incremental response must never cause removal |
+| A5 | Alerts schema | **UNCHANGED** | Field set unchanged; `end` null observed; route children carry `id`/`type`/`no_service_flag`; location children present on some alerts |
+| A6 | TripUpdate feed | **UNCHANGED** | Decodes as GTFS-RT 2.0; `incrementality 0 (FULL_DATASET)`; `trip.route_id` absent (0 of 424 entities); header `timestamp` in seconds; 424 entities / 24,244 stop_time_updates in capture 1 |
+
+### 11.2 Part B — new investigations
+
+**B1 — TripUpdate incrementality (qualified conclusion).** 10 successful responses spanning
+9.0 minutes (one per minute in the coordinated window): `incrementality_raw = 0 (FULL_DATASET)`
+in 10/10 responses; `gtfs_realtime_version "2.0"` throughout. **A finite sample cannot prove
+DIFFERENTIAL never occurs.** Qualified conclusion (a): FULL_DATASET-only observed, sufficient for
+initial implementation **provided** S12 rejects any non-FULL_DATASET response whole and preserves
+previous state (safe degradation mandatory in either case). Evidence: `b1_incrementality.json`.
+
+**B2 — TripUpdate → static GTFS matching (all 10 captures, M1 dataset `dataset-e642a21ab45100a7`).**
+
+| Measure | Value |
+|---|---|
+| Total TripUpdate entities across 10 captures | 4,166 |
+| Entities with usable `trip.trip_id` | 4,166 (100%) |
+| Invalid or incomplete entities | 0 |
+| Distinct trip ids | 451 |
+| Distinct trip ids matching M1 `trips.txt` (67,957 trips loaded) | **451 (100%)** |
+| Unmatched ids | 0 (no samples; no format anomaly) |
+| Entity-instances matched to MAX routes (90/100/190/200/290) | 713 |
+| Entity-instances matched to non-MAX routes | 3,453 |
+| Entities with `vehicle.id` | 4,166 (100%) |
+| `vehicle.id` joining to vehicles-feed `vehicleID`s | 4,162/4,166 (99.9%) |
+
+TripUpdate→GTFS matching is a pure `trip_id` join with a 100% hit rate against the M1 dataset;
+MAX filtering needs only the route whitelist. Evidence: `b2_match_report.json`.
+
+**B3 — Alert id stability.** 32 alerts in every one of 5 captures (spaced 2 min); identical id
+set throughout (0 appear/disappear); zero content changes among recurring ids. Alert `id` is a
+stable dedup key over the observed window. Evidence: `b3_alert_stability.json`.
+
+**B4 — Alert route namespace.** 29 distinct route-child ids across capture 1; **all 29 match
+GTFS `route_id` values** (27 also match `route_short_name`); zero unmatched. 31 route-scoped
+alerts, 0 system-wide, 0 location-only in this window. Proposed MAX-classification rule: an alert
+is MAX-relevant if `system_wide_flag` is true OR any route child id ∈ {90,100,190,200,290};
+location-only alerts (none observed; M0 saw location children exist) go to diagnostics with
+`desc` inspection, never auto-classified. Evidence: `b4_alert_routes.json`.
+
+**B5 — Cadence and freshness (coordinated 10-minute window; monotonic scheduling, no overlap —
+max schedule lateness 0.016 s).**
+
+| Feed | Polls | Response size | Change fraction per interval | `queryTime` lag behind poll |
+|---|---|---|---|---|
+| Vehicles @10 s | 60/60 ok | 192-199 KB | 241-268 of ~280 vehicles (~90%) changed per 10 s; new 0.14/poll, gone 0.31/poll | −34 to +273 ms (avg 70 ms) |
+| TripUpdates @60 s | 10/10 ok | 217-232 KB | 302-332 of ~415 trips (~75%) changed per 60 s; header `timestamp` advanced exactly 60 s per poll | fresh each poll |
+| Alerts @120 s | 5/5 ok | ~24 KB | 0 changes across 10 min (32 alerts constant) | n/a |
+
+`expires − time` horizon re-measured across the window: 600.0-1885.6 s (median ~799 s) —
+consistent with M0's 600-1844 s. Evidence: `b5_cadence.json`.
+
+**B6 — `showStale=true` (5 paired polls).** Default vs showStale totals: ~301-305 vs ~331-335
+(rail 79 vs 99); stale-only set consistently **30 vehicles, all rail**, expired by 88 s to
+**18.5 hours** (time age up to 18.7 h) — end-of-service rail vehicles parked for the night.
+Recommendation: **do not adopt `showStale=true` in the live pipeline**; it would re-introduce
+precisely the ghost vehicles the M2 removal hierarchy exists to prevent. Keep it audit/diagnostic
+only (as M0 concluded). Evidence: `b6_showstale.json`.
+
+**B7 — `gtfs-realtime-bindings` evaluation (isolated throwaway venv outside the repository;
+project venv and manifest untouched).** Library 3.0.0 with protobuf 7.36.2 decoded the captured
+FeedMessage (424 entities); 2,702 negative delays decoded identically by library and stdlib
+parser (sign-extension verified); cross-check of 12,868 arrival/departure delay pairs:
+12,868/12,868 agreement. Verdict: **SUITABLE**. Adoption into the project dependency manifest is
+a separate, later, explicitly authorized decision. Evidence: `b7_library_eval.json`.
+
+**B8 — HTTP mechanics.** Vehicles and alerts honor `Accept-Encoding: gzip` (vehicles 190,198 →
+24,242 bytes; alerts 23,673 → 4,733 bytes); **TripUpdate does not compress** (219,823 bytes
+identical with gzip and identity). Trailing-slash variants (`/ws/v2/vehicles/`,
+`/ws/V1/TripUpdate/`) return 200. Evidence: `b8_http_details.json`.
+
+### 11.3 Proposed polling intervals and freshness thresholds (owner decides)
+
+| Feed | Proposed poll interval | Proposed freshness thresholds |
+|---|---|---|
+| Vehicles | 10 s (incremental `since=` + periodic full reconciliation per architecture) | HEALTHY if last success ≤ 30 s; DELAYED if `queryTime` lag > 5 s; STALE if last success > 30 s |
+| TripUpdates | 60 s (feed regenerates per minute; ~75% of trips change per interval) | HEALTHY if last success ≤ 120 s; STALE if > 120 s |
+| Alerts | 120 s (static over the observed window) | HEALTHY if last success ≤ 360 s; STALE if > 360 s |
+
+Basis: B5 measurements (section 11.2). These are proposals; the owner approves final values.
+
+### 11.4 Decisions recorded for the owner
+
+1. **`showStale=true`: do not adopt** for the live pipeline (B6: stale entries up to 18.5 h
+   expired, all rail end-of-service vehicles).
+2. **TripUpdate incrementality:** qualified conclusion (a) — FULL_DATASET-only observed (10/10,
+   9.0 min); S12 must implement whole-response rejection of non-FULL_DATASET responses;
+   entity-level merging deferred with this risk recorded.
+3. **`gtfs-realtime-bindings`: SUITABLE** (3.0.0; protobuf 7.36.2; 12,868/12,868 cross-check;
+   negative delays verified). Adoption is a separate, later, explicitly authorized decision.
+4. **Polling intervals / freshness thresholds:** proposals in section 11.3, pending owner approval.
+5. **Alert MAX-classification rule:** `system_wide_flag` OR route child id ∈
+   {90,100,190,200,290}; location-only alerts to diagnostics (rule evidence-limited for
+   location-only and system-wide cases — none were live in the window).
+
+### 11.5 S8 limitations
+
+- The B1 sample spans 9 minutes of one late-evening window; DIFFERENTIAL cannot be ruled out
+  (safe degradation in S12 is mandatory regardless).
+- No system-wide or location-only alert was live during the window; the B4 rule's edge cases
+  rest on M0 observations plus conservative design, not S8 live evidence.
+- B2's 100% match rate reflects late-evening service (451 active trips); a daytime window would
+  exercise more trips, but the join mechanism itself is id-proven.
+- TripUpdate captures are ~10 minutes apart at 60 s granularity; sub-minute cadence behavior
+  was not measured.
+
+## 12. S10 — Feed Polling & Quota Management (M2)
+
+Stage S10 implements the REV 3 polling plan on top of the S8-verified endpoint facts and the
+S9 normalizers. All work below was verified offline (injected clocks, `httpx.MockTransport`, a
+real 127.0.0.1 loopback server); **no live TriMet request was issued during S10**.
+
+### 12.1 Modules added
+
+| Module | Role |
+|---|---|
+| `backend/trimet/poll_types.py` | Frozen types: feeds, purposes, gate reasons, failure codes, `PollDelivery`, `VehicleCollectionEvidence`, quota/runtime telemetry snapshots |
+| `backend/trimet/poll_errors.py` | Error taxonomy (`PollConfigError`, `LifecycleError`, `ProgrammerStateError`) |
+| `backend/trimet/live_config.py` | `LiveConfig` (frozen, secret-redacting) + `load_live_config` (env > `.env` > defaults) |
+| `backend/trimet/quota.py` | Shared request-budget governor: accounting, reset windows (DST-aware), cooldowns, clock trust, operator resolution, reinitialization |
+| `backend/trimet/feed_http.py` | One-shot HTTP boundary per attempt: request construction, bounded streaming reads (decoded-byte caps), gzip/`identity` only, content-type checks, Retry-After parsing, credential-safe logging suppression |
+| `backend/trimet/polling.py` | `PollingRuntime`: three worker threads, monotonic grid scheduling, vehicles watermark/authority logic, retry policy, delivery + telemetry, lifecycle, operator recovery |
+
+Three workers share one governor; every transport handoff consumes one counted, single-use
+admission. There are no refunds: abandoned in-flight admissions stay charged and are recorded
+as unused.
+
+### 12.2 Scheduling and vehicle authority (plan §5–§6)
+
+- Monotonic grid slots anchored at runtime construction; elapsed slots are skipped, never replayed.
+- Vehicle request purposes: `STARTUP_FULL` (first ever), `RECOVERY_FULL`, `SCHEDULED_FULL`
+  (every `TRIMET_VEHICLES_FULL_SECONDS`), `INCREMENTAL` with `since=<queryTime watermark>`.
+- The watermark commits only after an acknowledged sink delivery with a complete vehicle
+  collection (key present, is a list, zero rejected records). Missing/null collections deliver
+  an empty snapshot but do not commit; any record loss blocks the commit and forces a full.
+  The evidence record distinguishes an absent `vehicle` key (`key_present=false`) from an
+  explicit `vehicle: null` (`key_present=true, is_list=false`); both carry unknown counts.
+- Out-of-order responses (older `queryTime`) are detected pre-sink: not published, watermark
+  untouched, full forced. Equal `queryTime` is published without advancing (max merge).
+
+### 12.3 Quota accounting and resets (plan §7)
+
+Counters per window and lifetime: charged admissions, transport handoffs (retries as a subset),
+responses, transport failures, feed rejections, accepted deliveries, unused admissions, and
+admitted-but-not-yet-settled (`pending_admitted`). Lifetime counters use a strict per-event
+convention: each event increments its lifetime counter exactly once when it happens, and
+rollover/recovery clear only the current window without re-adding it, so lifetime totals equal
+their event counts at all times. Refusal examples verified by tests:
+
+- Budget 5, opening 0: the 5th admission is granted, the 6th is refused `quota_exhausted`.
+- Opening 3 of 5: two grantable; `quota_initial_used = budget` refuses startup entirely.
+- Warning fires at `ceil(0.8 × budget)` — including a high opening estimate.
+- The opening estimate is scoped to its construction window: a nonzero, fully exhausted
+  opening seed stops contributing at the next legitimate reset rollover, so an unknown-usage
+  startup cannot pause polling beyond one reset (`quota_initial_used = budget` pauses until
+  the first reset, not forever); server cooldowns, auth blocks and clock flags survive the
+  rollover.
+- Delayed handoffs re-admit into the refreshed window under its *current* gates and budget
+  and return an explicit granted/refused decision; the runtime must not emit the HTTP attempt
+  on a refused re-admission (the charge stays conservative and unused admissions are counted).
+- Same-window recovery (`reinitialize_quota`) cannot undercut known current-window usage
+  (opening-estimate contribution + charged admissions); cross-window recovery after a
+  legitimate rollover correctly accepts a zero opening estimate.
+- Reset boundary crossing resets window counters once; lifecycle counters never roll backward
+  (a 40-day backward wall-clock jump cannot reopen a consumed window); a ~5-minute suspend
+  with matching wall advance stays trusted; divergent movement marks `clock_untrusted` and
+  halts admission until an operator `reinitialize_quota` (validates the expected UTC window id
+  and does not undercut known current-window usage).
+- Cooldowns: shared (429) gates all three feeds; per-feed (503) gates only that feed; a later
+  declaration extends a wait, never shortens it; named unrepresentable holds are operator-only.
+- Acknowledged limitation: the governor is in-memory per process, so quota accounting and pause
+  state do **not** survive a restart or span multiple processes. Restart reconciliation is by
+  operator-provided opening estimate (`TRIMET_QUOTA_INITIAL_USED` / `reinitialize_quota`).
+
+### 12.4 Reset windows and DST (plan §7)
+
+`TRIMET_QUOTA_RESET_TIME`/`TRIMET_QUOTA_RESET_ZONE` are application policy — TriMet's actual
+reset clock is not verified. Verified tests: a 23 h spring-forward window (2026-03-08, where a
+02:30 reset instant does not exist and the first valid local minute is used), a 25 h fall-back
+window (2026-11-01 with an ambiguous 01:30 reset having two UTC occurrence boundaries), and
+non-midnight local resets.
+
+### 12.5 Retry policy (plan §8)
+
+- Every attempt is counted; at most one bounded in-cycle retry per slot (configurable 1–2).
+- 429: never an immediate retry; shared AppID pause at `max(60 s policy floor, valid server
+  delay)`; missing/malformed/negative/zero values use the floor; repeated refusals only extend.
+- 503: a valid positive Retry-After is a per-feed minimum delay; missing/invalid/zero values
+  fall back to the normal bounded retry.
+- A server wait is accepted only when it survives the *complete* conversion path: the parser
+  must produce a finite float (integer figures beyond the float range, or beyond the
+  interpreter's 4300-digit integer-string safeguard — which is never disabled — become the
+  operator-only hold), and the runtime's checked duration/deadline arithmetic must accept it
+  (`int(delay_s * 1000)` cannot overflow into infinity). A finite float such as 1e306 seconds
+  that overflows the deadline forms is also an operator-only hold — never clipped to a shorter
+  cooldown and never a worker crash; the hold is visible in feed telemetry and
+  operator-resolvable with the existing 60-second guard.
+- In-cycle retries only run when the wait fits before the next regular slot; waits are
+  stop-event interruptible.
+- `Retry-After` parsing tests: seconds, zero, negative, signed, non-ASCII bytes, past HTTP
+  dates (→ 0), future dates, multi-day waits, and unrepresentable values.
+
+### 12.6 Credential safety (plan §10)
+
+- The AppID travels only as a query parameter; it is excluded from `LiveConfig` repr, telemetry
+  snapshots, audit lines and error text; failure outcomes carry reason codes and numeric
+  metadata, never `str(httpx_exception)` or response bodies.
+- `feed_http.apply_credential_safe_logging()` (applied by `build_production_client`) pins
+  `httpx`/`httpcore` loggers to WARNING and drops their records outright — their INFO request
+  logs carry full URLs including `appID`, so the application must not rely on log level. Verified
+  by a root-DEBUG capture: the fake sentinel appears nowhere in logs, output or telemetry.
+- S10 test suites install a socket guard that refuses any non-loopback DNS/connect before
+  contact; a deliberate `developer.trimet.org` request is demonstrably refused (`appID` guard
+  assertion) in `tests/test_trimet_polling_integration.py`.
+
+### 12.7 Verification evidence
+
+- Full suite: **685 passed, 17 skipped, 0 failed** (baseline before S10 stayed 483 passed /
+  17 skipped / 0 failed — reproduced unchanged after the correction pass; the 17 gated
+  live-feed tests remain skipped).
+- S10 test files collect **202** tests: `test_live_config.py` (31), `test_trimet_quota.py`
+  (56), `test_trimet_feed_http.py` (55), `test_trimet_polling.py` (49),
+  `test_trimet_polling_integration.py` (11 real-loopback tests). (The first-pass completion
+  report's per-file list summed to 180 and its total read 663; the review's verified first
+  pass was 664. Both reporting slips are corrected here. This list reflects final counts
+  including the correction-pass regressions.)
+- Dependencies installed in the existing venv (reviewed versions only):
+  `httpx==0.28.1` (+ `httpcore 1.0.9`, `anyio 4.16.0`, `idna`, `certifi` transitives) and
+  `tzdata==2026.6`; pinned in `requirements.txt` / `requirements-dev.txt`
+  (`pytest==9.2.0` pre-existing version). No protobuf package is required — the GTFS-Realtime
+  decoder is in-project (`backend/trimet/rtproto.py`).
+
+### 12.8 S10 limitations
+
+- Governor state is per-process, in memory: quota counters, cooldowns, auth blocks and clock
+  distrust do not survive a process restart; after a restart the governor begins from the
+  operator-supplied opening estimate, and any prior operator pause must be re-entered by the
+  operator (the runtime keeps a `prior_pause_state: unknown` marker for the first cycle).
+- Multi-process deployments would each keep their own budget counters — not safe for a shared
+  AppID without external coordination (Phase 1 runs one process).
+- No live TriMet soak has been run against the new polling code; the real-feed soak remains
+  deferred (S14 work).
+
+### 12.9 S10 correction pass (acceptance review, November 7 2026)
+
+The owner's acceptance review reproduced seven defects with an offline check runner
+(`s10-review-checks.py`, 0/8 before, 8/8 after). All fixes stayed inside the S10-scoped files:
+
+1. **Opening seed retention across rollovers** (`quota.py`): the opening estimate is now
+   scoped to `_seed_window_id` and contributes only while the current window is its
+   construction window; a legitimate forward rollover stops the seed without touching
+   cooldowns/auth blocks/clock trust.
+2. **Recovery lower bound** (`quota.py`): same-window `reinitialize` compares the new
+   estimate against the complete known current-window usage (seed contribution + charged);
+   cross-window recovery semantics unchanged.
+3. **Handoff re-admission** (`quota.py`, `polling.py`): `mark_handoff` refreshes its own
+   reset window, re-applies the current gates and budget to a stale token, and returns a
+   typed `HandoffDecision` (`granted` / `gate_reason` / deadline); the runtime never calls
+   the transport boundary for a refused re-admission and records the gate telemetry.
+4. **Feed-local operator holds in telemetry** (`quota.py`): `snapshot()` serializes
+   `unrepresentable_scopes` from the stored string keys and returns immutable tuples;
+   `declare_unrepresentable(PollFeed.ALERTS)` no longer raises `AttributeError`.
+5. **Partial thread-start failure** (`polling.py`): `_spawn_workers` starts each thread
+   inline (instead of registering all three first) and drops a never-started thread from
+   `_threads` on `start()` failure; `_join_workers` additionally skips `ident is None`
+   entries. The original spawn failure is preserved and the runtime returns to `STOPPED`
+   with the recorded survivors.
+6. **Explicit-null vehicle evidence** (`feed_http.py`): `capture_vehicle_evidence` tests
+   `"vehicle"` membership instead of `.get() .. is None`; explicit null keeps
+   `key_present=True, is_list=False, counts=None`.
+7. **Retry-After representation limit** (`feed_http.py`, `polling.py`): the `10 000 000 s`
+   policy cutoff was removed; the operator-only path now triggers only on genuine
+   representation limits (see 12.5). `10 000 001 s` etc. are preserved exactly.
+
+Regressions added for each finding (opening-seed expiry, recovery lower bound incl. the
+runtime operator path, both handoff interleavings, local-hold snapshot readability, real
+second-start failure, full evidence records, preserved long waits + overflow cases).
+
+### 12.10 S10 follow-up correction pass (acceptance review, November 8 2026)
+
+The review's follow-up runner reproduced two further defects (0/4 before, 4/4 after);
+fixes again stayed inside the S10-scoped files:
+
+8. **Lifetime totals double-counted at rollover/recovery** (`quota.py`): lifetime counters
+   were incremented per event *and* had the whole current window added again at reset — one
+   admission became `lifetime_charged=2` at midnight and at same-window recovery. The fold
+   was removed: lifetime counters are strictly per-event, totals equal event counts, late
+   (old-window) completions and separately charged re-admissions keep counting once each as
+   their own events. Exact-value assertions added for charged, handoffs, responses,
+   transport failures, feed rejections, deliveries and retry handoffs across rollover and
+   recovery (`TestLifetimeReconciliation`).
+9. **Retry-After conversion path incomplete** (`feed_http.py`, `polling.py`): the parser
+   also classifies the interpreter's integer-string-digit-safeguard `ValueError` (e.g. a
+   4,301-digit header) into the operator hold instead of a malformed-header short-retry
+   fallback; and the runtime classifies a finite parsed delay whose `int(delay_s * 1000)`
+   deadline conversion would overflow (e.g. `1e306` seconds) into the same hold *before* any
+   failing conversion, so a 429 or feed-local 503 can no longer crash a worker with
+   `OverflowError`. The hold now also appears in the feed's own telemetry gate reason, and
+   both full runtime paths (429 shared / 503 feed-scoped) are covered over the real loopback
+   server, including stopped-runtime operator resolution with the existing 60-second guard.
+

@@ -1,0 +1,5 @@
+# MAX Intelligence — runtime dependencies (M2 Stage S10).
+# Direct dependencies only; resolved transitives are not locked here.
+# Reviewed against PyPI metadata on 2026-11-07; do not upgrade opportunistically.
+httpx==0.28.1
+tzdata==2026.6

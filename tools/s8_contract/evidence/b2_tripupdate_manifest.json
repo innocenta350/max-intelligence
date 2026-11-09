@@ -1,0 +1,82 @@
+{
+  "artifact_tags": [
+    "B2"
+  ],
+  "campaign_id": "s8-1794024279858-afcea02f",
+  "tool": "tools/s8_contract/probe_s8.py",
+  "captured_at_utc_ms": 1794025380662,
+  "captured_at_utc": "2026-11-07T04:23:00.662Z",
+  "timestamp_convention": "UTC epoch milliseconds primary; ISO-8601 Z secondary",
+  "captures": [
+    {
+      "index": 1,
+      "file": "tripupdate_capture_01.bin",
+      "bytes": 231638,
+      "captured_at_utc_ms": 1794024790580,
+      "captured_at_utc": "2026-11-07T04:13:10.580Z"
+    },
+    {
+      "index": 2,
+      "file": "tripupdate_capture_02.bin",
+      "bytes": 231386,
+      "captured_at_utc_ms": 1794024850538,
+      "captured_at_utc": "2026-11-07T04:14:10.538Z"
+    },
+    {
+      "index": 3,
+      "file": "tripupdate_capture_03.bin",
+      "bytes": 228302,
+      "captured_at_utc_ms": 1794024910527,
+      "captured_at_utc": "2026-11-07T04:15:10.527Z"
+    },
+    {
+      "index": 4,
+      "file": "tripupdate_capture_04.bin",
+      "bytes": 228558,
+      "captured_at_utc_ms": 1794024970534,
+      "captured_at_utc": "2026-11-07T04:16:10.534Z"
+    },
+    {
+      "index": 5,
+      "file": "tripupdate_capture_05.bin",
+      "bytes": 226293,
+      "captured_at_utc_ms": 1794025030537,
+      "captured_at_utc": "2026-11-07T04:17:10.537Z"
+    },
+    {
+      "index": 6,
+      "file": "tripupdate_capture_06.bin",
+      "bytes": 226462,
+      "captured_at_utc_ms": 1794025090489,
+      "captured_at_utc": "2026-11-07T04:18:10.489Z"
+    },
+    {
+      "index": 7,
+      "file": "tripupdate_capture_07.bin",
+      "bytes": 225115,
+      "captured_at_utc_ms": 1794025150495,
+      "captured_at_utc": "2026-11-07T04:19:10.495Z"
+    },
+    {
+      "index": 8,
+      "file": "tripupdate_capture_08.bin",
+      "bytes": 223621,
+      "captured_at_utc_ms": 1794025210619,
+      "captured_at_utc": "2026-11-07T04:20:10.619Z"
+    },
+    {
+      "index": 9,
+      "file": "tripupdate_capture_09.bin",
+      "bytes": 219595,
+      "captured_at_utc_ms": 1794025270650,
+      "captured_at_utc": "2026-11-07T04:21:10.650Z"
+    },
+    {
+      "index": 10,
+      "file": "tripupdate_capture_10.bin",
+      "bytes": 217278,
+      "captured_at_utc_ms": 1794025330532,
+      "captured_at_utc": "2026-11-07T04:22:10.532Z"
+    }
+  ]
+}

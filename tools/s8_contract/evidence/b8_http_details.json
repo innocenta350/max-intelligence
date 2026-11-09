@@ -1,0 +1,91 @@
+{
+  "artifact_tags": [
+    "B8"
+  ],
+  "campaign_id": "s8-1794024279858-afcea02f",
+  "tool": "tools/s8_contract/probe_s8.py",
+  "captured_at_utc_ms": 1794025473750,
+  "captured_at_utc": "2026-11-07T04:24:33.750Z",
+  "timestamp_convention": "UTC epoch milliseconds primary; ISO-8601 Z secondary",
+  "probes": [
+    {
+      "feed": "vehicles",
+      "accept_encoding": "gzip",
+      "outcome": "succeeded",
+      "http_status": 200,
+      "bytes": 24249,
+      "content_type": "application/json",
+      "content_encoding": "gzip",
+      "date_header": "Sat, 07 Nov 2026 04:24:32 GMT"
+    },
+    {
+      "feed": "vehicles",
+      "accept_encoding": "identity",
+      "outcome": "succeeded",
+      "http_status": 200,
+      "bytes": 190198,
+      "content_type": "application/json",
+      "content_encoding": null,
+      "date_header": "Sat, 07 Nov 2026 04:24:32 GMT"
+    },
+    {
+      "feed": "vehicles",
+      "variant": "trailing_slash",
+      "outcome": "succeeded",
+      "http_status": 200,
+      "bytes": 190192,
+      "content_type": "application/json",
+      "date_header": "Sat, 07 Nov 2026 04:24:32 GMT"
+    },
+    {
+      "feed": "alerts",
+      "accept_encoding": "gzip",
+      "outcome": "succeeded",
+      "http_status": 200,
+      "bytes": 4733,
+      "content_type": "application/json",
+      "content_encoding": "gzip",
+      "date_header": "Sat, 07 Nov 2026 04:24:32 GMT"
+    },
+    {
+      "feed": "alerts",
+      "accept_encoding": "identity",
+      "outcome": "succeeded",
+      "http_status": 200,
+      "bytes": 23673,
+      "content_type": "application/json",
+      "content_encoding": null,
+      "date_header": "Sat, 07 Nov 2026 04:24:33 GMT"
+    },
+    {
+      "feed": "tripupdates",
+      "accept_encoding": "gzip",
+      "outcome": "succeeded",
+      "http_status": 200,
+      "bytes": 219823,
+      "content_type": "application/grtfeed",
+      "content_encoding": null,
+      "date_header": "Sat, 07 Nov 2026 04:24:33 GMT"
+    },
+    {
+      "feed": "tripupdates",
+      "accept_encoding": "identity",
+      "outcome": "succeeded",
+      "http_status": 200,
+      "bytes": 219823,
+      "content_type": "application/grtfeed",
+      "content_encoding": null,
+      "date_header": "Sat, 07 Nov 2026 04:24:33 GMT"
+    },
+    {
+      "feed": "tripupdates",
+      "variant": "trailing_slash",
+      "outcome": "succeeded",
+      "http_status": 200,
+      "bytes": 219823,
+      "content_type": "application/grtfeed",
+      "date_header": "Sat, 07 Nov 2026 04:24:33 GMT"
+    }
+  ],
+  "status": "COMPLETE"
+}

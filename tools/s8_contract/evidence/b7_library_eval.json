@@ -1,0 +1,61 @@
+{
+  "artifact_tags": [
+    "B7"
+  ],
+  "campaign_id": "s8-1794024279858-afcea02f",
+  "tool": "tools/s8_contract/probe_s8.py",
+  "captured_at_utc_ms": 1794025486967,
+  "captured_at_utc": "2026-11-07T04:24:46.967Z",
+  "timestamp_convention": "UTC epoch milliseconds primary; ISO-8601 Z secondary",
+  "requests_consumed": 0,
+  "venv_dir": "C:\\Users\\Riley\\AppData\\Local\\Temp\\opencode\\s8_b7_venv",
+  "venv_outside_repo": true,
+  "pip_cache_dir": "C:\\Users\\Riley\\AppData\\Local\\Temp\\opencode\\s8_b7_pip_cache",
+  "status": "COMPLETE",
+  "pip_returncode": 0,
+  "pip_output_tail": "Collecting gtfs-realtime-bindings\n  Downloading gtfs_realtime_bindings-3.0.0-py3-none-any.whl.metadata (659 bytes)\nCollecting protobuf>=7.34.0 (from gtfs-realtime-bindings)\n  Downloading protobuf-7.36.2-cp310-abi3-win_amd64.whl.metadata (595 bytes)\nDownloading gtfs_realtime_bindings-3.0.0-py3-none-any.whl (11 kB)\nDownloading protobuf-7.36.2-cp310-abi3-win_amd64.whl (456 kB)\nInstalling collected packages: protobuf, gtfs-realtime-bindings\nSuccessfully installed gtfs-realtime-bindings-3.0.0 protobuf-7.36.2\n",
+  "decoded": {
+    "library": "gtfs-realtime-bindings",
+    "library_version": "3.0.0",
+    "protobuf_version": "7.36.2",
+    "decoded_ok": true,
+    "header": {
+      "gtfs_realtime_version": "2.0",
+      "incrementality": "FULL_DATASET",
+      "timestamp": 1794024790
+    },
+    "entities": 424,
+    "trip_updates": 424,
+    "stdlib_negative_delays": 2702,
+    "library_negative_delays": 2702,
+    "negative_delay_sample_stdlib": [
+      -29,
+      -29,
+      -29,
+      -29,
+      -19
+    ],
+    "negative_delay_sample_library": [
+      -29,
+      -29,
+      -29,
+      -29,
+      -19
+    ],
+    "crosscheck_pairs_checked": 12868,
+    "crosscheck_agree": 12868,
+    "crosscheck_disagree": 0,
+    "stdlib_header_for_comparison": {
+      "gtfs_realtime_version": "2.0",
+      "incrementality_raw": 0,
+      "timestamp": 1794024790
+    }
+  },
+  "verdict": "SUITABLE",
+  "verdict_basis": {
+    "decoded_full_message": true,
+    "crosscheck_agreement": "12868/12868",
+    "negative_delay_handling_verified": true
+  },
+  "adoption_note": "Suitability verdict only. Adoption into the project dependency manifest is a separate, later, explicitly authorized decision. The project venv and manifest are untouched by this phase."
+}

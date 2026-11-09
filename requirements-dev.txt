@@ -1,0 +1,5 @@
+# MAX Intelligence — development dependencies (M2 Stage S10).
+# Includes the runtime manifest plus the pre-existing pytest version
+# (verified from installed package metadata; do not upgrade opportunistically).
+-r requirements.txt
+pytest==9.2.0

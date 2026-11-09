@@ -1,0 +1,592 @@
+{
+  "artifact_tags": [
+    "A1",
+    "A2",
+    "A3",
+    "A4"
+  ],
+  "campaign_id": "s8-1794024279858-afcea02f",
+  "tool": "tools/s8_contract/probe_s8.py",
+  "captured_at_utc_ms": 1794024279859,
+  "captured_at_utc": "2026-11-07T04:04:39.859Z",
+  "timestamp_convention": "UTC epoch milliseconds primary; ISO-8601 Z secondary",
+  "a1": {
+    "request1": {
+      "observation": {
+        "tag": "A1A2",
+        "kind": "base",
+        "url_redacted": "https://developer.trimet.org/ws/v2/vehicles",
+        "started_at_utc_ms": 1794024279859,
+        "started_at_utc": "2026-11-07T04:04:39.859Z",
+        "transmitted_at_utc_ms": 1794024279859,
+        "outcome": "succeeded",
+        "http_status": 200,
+        "bytes": 204367,
+        "date_header": "Sat, 07 Nov 2026 04:04:40 GMT",
+        "date_header_ms": 1794024280000,
+        "content_type": "application/json",
+        "content_encoding": null,
+        "response_headers_sanitized": {
+          "Date": "Sat, 07 Nov 2026 04:04:40 GMT",
+          "Server": "Apache",
+          "Content-Type": "application/json",
+          "Via": "1.1 developer.trimet.org",
+          "Vary": "Accept-Encoding",
+          "X-Frame-Options": "SAMEORIGIN",
+          "Access-Control-Allow-Origin": "*",
+          "Keep-Alive": "timeout=10, max=79",
+          "Connection": "Keep-Alive",
+          "Transfer-Encoding": "chunked",
+          "Strict-Transport-Security": "max-age=31536000"
+        },
+        "finished_at_utc_ms": 1794024280188
+      },
+      "summary_counts": {
+        "total": 323,
+        "rail": 81,
+        "queryTime": 1794024280163
+      },
+      "keys_first_vehicle": [
+        "bearing",
+        "blockID",
+        "delay",
+        "direction",
+        "expires",
+        "extraBlockID",
+        "garage",
+        "inCongestion",
+        "lastLocID",
+        "lastStopSeq",
+        "latitude",
+        "loadPercentage",
+        "locationInScheduleDay",
+        "longitude",
+        "messageCode",
+        "newTrip",
+        "nextLocID",
+        "nextStopSeq",
+        "offRoute",
+        "routeColor",
+        "routeNumber",
+        "routeSubType",
+        "serviceDate",
+        "signMessage",
+        "signMessageLong",
+        "source",
+        "time",
+        "tripID",
+        "type",
+        "vehicleID"
+      ],
+      "keys_union_all_vehicles": [
+        "bearing",
+        "blockID",
+        "delay",
+        "direction",
+        "expires",
+        "extraBlockID",
+        "garage",
+        "inCongestion",
+        "lastLocID",
+        "lastStopSeq",
+        "latitude",
+        "loadPercentage",
+        "locationInScheduleDay",
+        "longitude",
+        "messageCode",
+        "newTrip",
+        "nextLocID",
+        "nextStopSeq",
+        "offRoute",
+        "routeColor",
+        "routeNumber",
+        "routeSubType",
+        "serviceDate",
+        "signMessage",
+        "signMessageLong",
+        "source",
+        "time",
+        "tripID",
+        "type",
+        "vehicleID"
+      ],
+      "at_prefixed_keys": [],
+      "key_presence_counts": {
+        "bearing": 323,
+        "blockID": 323,
+        "delay": 323,
+        "direction": 323,
+        "expires": 323,
+        "extraBlockID": 323,
+        "garage": 323,
+        "inCongestion": 323,
+        "lastLocID": 323,
+        "lastStopSeq": 323,
+        "latitude": 323,
+        "loadPercentage": 323,
+        "locationInScheduleDay": 323,
+        "longitude": 323,
+        "messageCode": 323,
+        "newTrip": 323,
+        "nextLocID": 323,
+        "nextStopSeq": 323,
+        "offRoute": 323,
+        "routeColor": 323,
+        "routeNumber": 323,
+        "routeSubType": 323,
+        "serviceDate": 323,
+        "signMessage": 323,
+        "signMessageLong": 323,
+        "source": 323,
+        "time": 323,
+        "tripID": 323,
+        "type": 323,
+        "vehicleID": 323
+      },
+      "route_counts": {
+        "100": 31,
+        "12": 7,
+        "14": 5,
+        "15": 9,
+        "155": 2,
+        "17": 6,
+        "19": 4,
+        "190": 10,
+        "2": 7,
+        "20": 14,
+        "200": 8,
+        "21": 3,
+        "22": 2,
+        "24": 4,
+        "25": 2,
+        "290": 12,
+        "30": 2,
+        "31": 2,
+        "33": 6,
+        "35": 7,
+        "4": 12,
+        "40": 3,
+        "43": 2,
+        "44": 4,
+        "47": 4,
+        "48": 4,
+        "52": 4,
+        "54": 6,
+        "56": 3,
+        "57": 10,
+        "6": 9,
+        "62": 3,
+        "67": 1,
+        "70": 4,
+        "71": 6,
+        "72": 13,
+        "73": 7,
+        "74": 2,
+        "75": 12,
+        "76": 5,
+        "77": 8,
+        "78": 3,
+        "79": 2,
+        "8": 6,
+        "81": 2,
+        "86": 3,
+        "87": 4,
+        "88": 4,
+        "9": 11,
+        "90": 20,
+        "94": 3
+      }
+    },
+    "comparison_vs_m0": {
+      "m0_key_count": 30,
+      "s8_key_count": 30,
+      "unchanged": [
+        "bearing",
+        "blockID",
+        "delay",
+        "direction",
+        "expires",
+        "extraBlockID",
+        "garage",
+        "inCongestion",
+        "lastLocID",
+        "lastStopSeq",
+        "latitude",
+        "loadPercentage",
+        "locationInScheduleDay",
+        "longitude",
+        "messageCode",
+        "newTrip",
+        "nextLocID",
+        "nextStopSeq",
+        "offRoute",
+        "routeColor",
+        "routeNumber",
+        "routeSubType",
+        "serviceDate",
+        "signMessage",
+        "signMessageLong",
+        "source",
+        "time",
+        "tripID",
+        "type",
+        "vehicleID"
+      ],
+      "new_vs_m0": [],
+      "missing_vs_m0": [],
+      "plain_keys_no_at_prefix": true
+    }
+  },
+  "a2": {
+    "sample1": {
+      "queryTime": 1794024280163,
+      "queryTime_iso": "2026-11-07T04:04:40.163Z",
+      "queryTime_magnitude_is_ms": true,
+      "local_minus_queryTime_ms": 25,
+      "date_header_minus_queryTime_ms": -163,
+      "time_values_all_ms_magnitude": true,
+      "expires_values_all_ms_magnitude": true,
+      "time_min": 1794023656882,
+      "time_max": 1794024279970,
+      "expires_minus_time_seconds": {
+        "min": 600.0,
+        "median": 804.124,
+        "max": 1600.07
+      }
+    },
+    "sample2": {
+      "queryTime": 1794024310458,
+      "queryTime_iso": "2026-11-07T04:05:10.458Z",
+      "queryTime_magnitude_is_ms": true,
+      "local_minus_queryTime_ms": 48,
+      "date_header_minus_queryTime_ms": -458,
+      "time_values_all_ms_magnitude": true,
+      "expires_values_all_ms_magnitude": true,
+      "time_min": 1794023656882,
+      "time_max": 1794024310226,
+      "expires_minus_time_seconds": {
+        "min": 600.0,
+        "median": 794.74,
+        "max": 1600.07
+      }
+    }
+  },
+  "a3": {
+    "plan": "3 earliest-expiring rail vehicles; default poll pre-expiry, default + showStale around each expiry",
+    "polls": [
+      {
+        "purpose": "pre_expiry_default",
+        "result": {
+          "tag": "A3",
+          "kind": "base",
+          "url_redacted": "https://developer.trimet.org/ws/v2/vehicles",
+          "started_at_utc_ms": 1794024723432,
+          "started_at_utc": "2026-11-07T04:12:03.432Z",
+          "transmitted_at_utc_ms": 1794024723433,
+          "outcome": "succeeded",
+          "http_status": 200,
+          "bytes": 202411,
+          "date_header": "Sat, 07 Nov 2026 04:12:03 GMT",
+          "date_header_ms": 1794024723000,
+          "content_type": "application/json",
+          "content_encoding": null,
+          "response_headers_sanitized": {
+            "Date": "Sat, 07 Nov 2026 04:12:03 GMT",
+            "Server": "Apache",
+            "Content-Type": "application/json",
+            "Via": "1.1 developer.trimet.org",
+            "Vary": "Accept-Encoding",
+            "X-Frame-Options": "SAMEORIGIN",
+            "Access-Control-Allow-Origin": "*",
+            "Keep-Alive": "timeout=10, max=80",
+            "Connection": "Keep-Alive",
+            "Transfer-Encoding": "chunked",
+            "Strict-Transport-Security": "max-age=31536000"
+          },
+          "finished_at_utc_ms": 1794024723743
+        }
+      },
+      {
+        "purpose": "post_expiry_default",
+        "result": {
+          "tag": "A3",
+          "kind": "base",
+          "url_redacted": "https://developer.trimet.org/ws/v2/vehicles",
+          "started_at_utc_ms": 1794024772431,
+          "started_at_utc": "2026-11-07T04:12:52.431Z",
+          "transmitted_at_utc_ms": 1794024772431,
+          "outcome": "succeeded",
+          "http_status": 200,
+          "bytes": 199225,
+          "date_header": "Sat, 07 Nov 2026 04:12:52 GMT",
+          "date_header_ms": 1794024772000,
+          "content_type": "application/json",
+          "content_encoding": null,
+          "response_headers_sanitized": {
+            "Date": "Sat, 07 Nov 2026 04:12:52 GMT",
+            "Server": "Apache",
+            "Content-Type": "application/json",
+            "Via": "1.1 developer.trimet.org",
+            "Vary": "Accept-Encoding",
+            "X-Frame-Options": "SAMEORIGIN",
+            "Access-Control-Allow-Origin": "*",
+            "Keep-Alive": "timeout=10, max=65",
+            "Connection": "Keep-Alive",
+            "Transfer-Encoding": "chunked",
+            "Strict-Transport-Security": "max-age=31536000"
+          },
+          "finished_at_utc_ms": 1794024772742
+        }
+      },
+      {
+        "purpose": "post_expiry_showStale",
+        "result": {
+          "tag": "A3",
+          "kind": "base",
+          "url_redacted": "https://developer.trimet.org/ws/v2/vehicles",
+          "started_at_utc_ms": 1794024775750,
+          "started_at_utc": "2026-11-07T04:12:55.750Z",
+          "transmitted_at_utc_ms": 1794024775750,
+          "outcome": "succeeded",
+          "http_status": 200,
+          "bytes": 218310,
+          "date_header": "Sat, 07 Nov 2026 04:12:56 GMT",
+          "date_header_ms": 1794024776000,
+          "content_type": "application/json",
+          "content_encoding": null,
+          "response_headers_sanitized": {
+            "Date": "Sat, 07 Nov 2026 04:12:56 GMT",
+            "Server": "Apache",
+            "Content-Type": "application/json",
+            "Via": "1.1 developer.trimet.org",
+            "Vary": "Accept-Encoding",
+            "X-Frame-Options": "SAMEORIGIN",
+            "Access-Control-Allow-Origin": "*",
+            "Keep-Alive": "timeout=10, max=47",
+            "Connection": "Keep-Alive",
+            "Transfer-Encoding": "chunked",
+            "Strict-Transport-Security": "max-age=31536000"
+          },
+          "finished_at_utc_ms": 1794024776006
+        }
+      }
+    ],
+    "status": "COMPLETE",
+    "selected_vehicles_at_a1": [
+      {
+        "vehicleID": 538,
+        "expires": 1794024768430,
+        "expires_iso": "2026-11-07T04:12:48.430Z",
+        "time": 1794024168430,
+        "routeNumber": 100
+      },
+      {
+        "vehicleID": 522,
+        "expires": 1794024768430,
+        "expires_iso": "2026-11-07T04:12:48.430Z",
+        "time": 1794024168430,
+        "routeNumber": 100
+      },
+      {
+        "vehicleID": 304,
+        "expires": 1794024769000,
+        "expires_iso": "2026-11-07T04:12:49.000Z",
+        "time": 1794024014486,
+        "routeNumber": 90
+      }
+    ],
+    "pre_expiry_snapshot": {
+      "queryTime": 1794024723731,
+      "queryTime_iso": "2026-11-07T04:12:03.731Z",
+      "total": 320,
+      "rail": 83,
+      "expires_minus_time_seconds": {
+        "min": 600.0,
+        "median": 798.598,
+        "max": 1344.853
+      },
+      "targets_observed": {
+        "538": {
+          "present": true,
+          "expires": 1794024768430,
+          "expires_iso": "2026-11-07T04:12:48.430Z"
+        },
+        "522": {
+          "present": true,
+          "expires": 1794024768430,
+          "expires_iso": "2026-11-07T04:12:48.430Z"
+        },
+        "304": {
+          "present": true,
+          "expires": 1794024769000,
+          "expires_iso": "2026-11-07T04:12:49.000Z"
+        }
+      }
+    },
+    "post_expiry_default": {
+      "queryTime": 1794024772693,
+      "queryTime_iso": "2026-11-07T04:12:52.693Z",
+      "total": 315,
+      "rail": 79,
+      "targets_present": {
+        "538": false,
+        "522": false,
+        "304": false
+      },
+      "targets_expired_by_ms_at_queryTime": {
+        "538": 4263,
+        "522": 4263,
+        "304": 3693
+      }
+    },
+    "post_expiry_showStale": {
+      "queryTime": 1794024776018,
+      "queryTime_iso": "2026-11-07T04:12:56.018Z",
+      "total": 345,
+      "rail": 99,
+      "targets_present": {
+        "538": true,
+        "522": true,
+        "304": true
+      },
+      "target_details_when_present": {
+        "538": {
+          "expires": 1794024768430,
+          "expires_iso": "2026-11-07T04:12:48.430Z",
+          "time": 1794024168430,
+          "expired_by_ms_at_queryTime": 7588
+        },
+        "522": {
+          "expires": 1794024768430,
+          "expires_iso": "2026-11-07T04:12:48.430Z",
+          "time": 1794024168430,
+          "expired_by_ms_at_queryTime": 7588
+        },
+        "304": {
+          "expires": 1794024769000,
+          "expires_iso": "2026-11-07T04:12:49.000Z",
+          "time": 1794024014486,
+          "expired_by_ms_at_queryTime": 7018
+        }
+      }
+    },
+    "targeted_extra_polls": [],
+    "verdicts": {
+      "default_omits_expired": true,
+      "showStale_includes_expired": true,
+      "expires_non_extension_pre_expiry": {
+        "538": true,
+        "522": true,
+        "304": true
+      },
+      "retargets": 0
+    }
+  },
+  "a4": {
+    "status": "COMPLETE",
+    "base": {
+      "queryTime": 1794024776284,
+      "queryTime_iso": "2026-11-07T04:12:56.284Z",
+      "total": 315,
+      "rail": 79
+    },
+    "follow_ups": [
+      {
+        "since": 1794024776284,
+        "queryTime": 1794024778643,
+        "queryTime_iso": "2026-11-07T04:12:58.643Z",
+        "returned": 195,
+        "time_gt_since": 89,
+        "time_le_since": 106,
+        "sample_ids": [
+          4522,
+          4521,
+          4518,
+          4515,
+          4511,
+          4417,
+          4415,
+          4412
+        ]
+      },
+      {
+        "since": 1794024778643,
+        "queryTime": 1794024780991,
+        "queryTime_iso": "2026-11-07T04:13:00.991Z",
+        "returned": 137,
+        "time_gt_since": 128,
+        "time_le_since": 9,
+        "sample_ids": [
+          4518,
+          4515,
+          4510,
+          4412,
+          4408,
+          4239,
+          4238,
+          4224
+        ]
+      }
+    ]
+  },
+  "budget_snapshot_at_end": {
+    "reserved": 8,
+    "transmitted": 8,
+    "succeeded": 8,
+    "failed": 0,
+    "retried": 0,
+    "aborted_pre_transmission": 0
+  },
+  "a5": {
+    "status": "COMPLETE",
+    "source": "window alert capture 1",
+    "alert_count": 32,
+    "field_keys_union": [
+      "begin",
+      "desc_first160",
+      "end",
+      "header_text",
+      "id",
+      "info_link_url",
+      "locations",
+      "routes",
+      "system_wide_flag"
+    ],
+    "end_null_count": 23,
+    "end_present_count": 9,
+    "route_child_keys": [
+      "id",
+      "no_service_flag",
+      "type"
+    ],
+    "location_child_keys": [
+      "desc",
+      "id",
+      "no_service_flag"
+    ],
+    "system_wide_flag_values": [
+      "False"
+    ]
+  },
+  "a6": {
+    "status": "COMPLETE",
+    "source": "tripupdate_capture_01.bin",
+    "bytes": 231638,
+    "header": {
+      "gtfs_realtime_version": "2.0",
+      "incrementality_raw": 0,
+      "timestamp": 1794024790
+    },
+    "header_timestamp_magnitude_is_seconds": true,
+    "entities_total": 424,
+    "trip_update_entities": 424,
+    "other_entity_types": [],
+    "trip_route_id_present_count": 0,
+    "trip_id_present_count": 424,
+    "stop_time_updates_total": 24244,
+    "schedule_relationship_values": [
+      "None"
+    ],
+    "negative_delay_samples": []
+  }
+}

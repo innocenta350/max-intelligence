@@ -1,0 +1,97 @@
+{
+  "artifact_tags": [
+    "B1"
+  ],
+  "campaign_id": "s8-1794024279858-afcea02f",
+  "tool": "tools/s8_contract/probe_s8.py",
+  "captured_at_utc_ms": 1794025479989,
+  "captured_at_utc": "2026-11-07T04:24:39.989Z",
+  "timestamp_convention": "UTC epoch milliseconds primary; ISO-8601 Z secondary",
+  "b1": {
+    "status": "COMPLETE",
+    "observations": [
+      {
+        "capture": 1,
+        "captured_at_utc_ms": 1794024790580,
+        "gtfs_realtime_version": "2.0",
+        "incrementality_raw": 0,
+        "header_timestamp": 1794024790
+      },
+      {
+        "capture": 2,
+        "captured_at_utc_ms": 1794024850538,
+        "gtfs_realtime_version": "2.0",
+        "incrementality_raw": 0,
+        "header_timestamp": 1794024850
+      },
+      {
+        "capture": 3,
+        "captured_at_utc_ms": 1794024910527,
+        "gtfs_realtime_version": "2.0",
+        "incrementality_raw": 0,
+        "header_timestamp": 1794024910
+      },
+      {
+        "capture": 4,
+        "captured_at_utc_ms": 1794024970534,
+        "gtfs_realtime_version": "2.0",
+        "incrementality_raw": 0,
+        "header_timestamp": 1794024970
+      },
+      {
+        "capture": 5,
+        "captured_at_utc_ms": 1794025030537,
+        "gtfs_realtime_version": "2.0",
+        "incrementality_raw": 0,
+        "header_timestamp": 1794025030
+      },
+      {
+        "capture": 6,
+        "captured_at_utc_ms": 1794025090489,
+        "gtfs_realtime_version": "2.0",
+        "incrementality_raw": 0,
+        "header_timestamp": 1794025090
+      },
+      {
+        "capture": 7,
+        "captured_at_utc_ms": 1794025150495,
+        "gtfs_realtime_version": "2.0",
+        "incrementality_raw": 0,
+        "header_timestamp": 1794025150
+      },
+      {
+        "capture": 8,
+        "captured_at_utc_ms": 1794025210619,
+        "gtfs_realtime_version": "2.0",
+        "incrementality_raw": 0,
+        "header_timestamp": 1794025210
+      },
+      {
+        "capture": 9,
+        "captured_at_utc_ms": 1794025270650,
+        "gtfs_realtime_version": "2.0",
+        "incrementality_raw": 0,
+        "header_timestamp": 1794025270
+      },
+      {
+        "capture": 10,
+        "captured_at_utc_ms": 1794025330532,
+        "gtfs_realtime_version": "2.0",
+        "incrementality_raw": 0,
+        "header_timestamp": 1794025330
+      }
+    ],
+    "incrementality_value_counts": {
+      "0": 10
+    },
+    "incrementality_names": {
+      "0": "FULL_DATASET",
+      "1": "DIFFERENTIAL"
+    },
+    "sampling_duration_ms": 539952,
+    "sampling_duration_minutes": 9.0,
+    "successful_responses": 10,
+    "qualified_conclusion": "FULL_DATASET-only observed across this sample; sufficient for initial implementation PROVIDED S12 rejects any non-FULL_DATASET response whole and preserves previous state (safe degradation is mandatory in either case).",
+    "sampling_caveat": "A finite sample cannot prove DIFFERENTIAL never occurs; the safe-degradation path must exist regardless of this observation."
+  }
+}

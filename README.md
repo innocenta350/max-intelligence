@@ -39,6 +39,25 @@ The project uses TriMet's public transit data to build an independent platform f
 
 The immediate objective is to verify TriMet's data feeds before beginning application development.
 
+## Backend Setup
+
+The live polling backend (M2) runs on Python 3.12+ with two reviewed
+third-party runtime dependencies (`httpx` and `tzdata`); development adds
+`pytest` only — GTFS-Realtime protobuf decoding is handled in-project
+(`backend/trimet/rtproto.py`), so no protobuf package is required.
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\pip install -r requirements.txt          # runtime deps
+.\.venv\Scripts\pip install -r requirements-dev.txt      # dev/test deps
+```
+
+No package installation step is needed: `pytest.ini` sets `pythonpath = .`,
+so `backend.*` and `tests.*` resolve directly from the repository root.
+
+Copy `.env.example` to `.env` and fill in your TriMet AppID and quota
+settings; `.env` is read from the repository root and is Git-ignored.
+
 ## Project Documentation
 
 - [Architecture](docs/ARCHITECTURE.md)

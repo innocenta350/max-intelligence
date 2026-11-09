@@ -1,0 +1,241 @@
+{
+  "artifact_tags": [
+    "BUDGET"
+  ],
+  "campaign_id": "s8-1794024279858-afcea02f",
+  "tool": "tools/s8_contract/probe_s8.py",
+  "captured_at_utc_ms": 1794025508065,
+  "captured_at_utc": "2026-11-07T04:25:08.065Z",
+  "timestamp_convention": "UTC epoch milliseconds primary; ISO-8601 Z secondary",
+  "requests_consumed_by_this_artifact": 101,
+  "budget": {
+    "campaign_id": "s8-1794024279858-afcea02f",
+    "cap": 150,
+    "allocations": {
+      "base": {
+        "max": 110,
+        "used": 101
+      },
+      "retry_pool": {
+        "max": 20,
+        "used": 0
+      },
+      "reserve": {
+        "max": 20,
+        "used": 0
+      }
+    },
+    "counters": {
+      "reserved": 101,
+      "transmitted": 101,
+      "succeeded": 101,
+      "failed": 0,
+      "retried": 0,
+      "aborted_pre_transmission": 0
+    },
+    "per_tag": {
+      "A1A2": {
+        "reserved": 2,
+        "transmitted": 2,
+        "succeeded": 2,
+        "failed": 0,
+        "retried": 0,
+        "aborted_pre_transmission": 0,
+        "base_grants": 2
+      },
+      "A3": {
+        "reserved": 3,
+        "transmitted": 3,
+        "succeeded": 3,
+        "failed": 0,
+        "retried": 0,
+        "aborted_pre_transmission": 0,
+        "base_grants": 3
+      },
+      "A4": {
+        "reserved": 3,
+        "transmitted": 3,
+        "succeeded": 3,
+        "failed": 0,
+        "retried": 0,
+        "aborted_pre_transmission": 0,
+        "base_grants": 3
+      },
+      "B5-alerts": {
+        "reserved": 5,
+        "transmitted": 5,
+        "succeeded": 5,
+        "failed": 0,
+        "retried": 0,
+        "aborted_pre_transmission": 0,
+        "base_grants": 5
+      },
+      "B5-tripupdates": {
+        "reserved": 10,
+        "transmitted": 10,
+        "succeeded": 10,
+        "failed": 0,
+        "retried": 0,
+        "aborted_pre_transmission": 0,
+        "base_grants": 10
+      },
+      "B5-vehicles": {
+        "reserved": 60,
+        "transmitted": 60,
+        "succeeded": 60,
+        "failed": 0,
+        "retried": 0,
+        "aborted_pre_transmission": 0,
+        "base_grants": 60
+      },
+      "B6": {
+        "reserved": 10,
+        "transmitted": 10,
+        "succeeded": 10,
+        "failed": 0,
+        "retried": 0,
+        "aborted_pre_transmission": 0,
+        "base_grants": 10
+      },
+      "B8": {
+        "reserved": 8,
+        "transmitted": 8,
+        "succeeded": 8,
+        "failed": 0,
+        "retried": 0,
+        "aborted_pre_transmission": 0,
+        "base_grants": 8
+      }
+    },
+    "reserve_draws": [],
+    "stop_log": [],
+    "refusals": [],
+    "granted_count": 101,
+    "max_total_used": 101,
+    "invariants": {
+      "ok": true,
+      "problems": []
+    }
+  },
+  "reconciliation": {
+    "approved_table": {
+      "A1A2": 2,
+      "A3": 12,
+      "A4": 3,
+      "B5-vehicles": 60,
+      "B5-tripupdates": 10,
+      "B5-alerts": 5,
+      "B6": 10,
+      "B8": 8,
+      "retry_pool": 20,
+      "reserve": 20,
+      "hard_cap": 150
+    },
+    "actual_per_tag": {
+      "A1A2": {
+        "reserved": 2,
+        "transmitted": 2,
+        "succeeded": 2,
+        "failed": 0,
+        "retried": 0,
+        "aborted_pre_transmission": 0,
+        "base_grants": 2
+      },
+      "A3": {
+        "reserved": 3,
+        "transmitted": 3,
+        "succeeded": 3,
+        "failed": 0,
+        "retried": 0,
+        "aborted_pre_transmission": 0,
+        "base_grants": 3
+      },
+      "A4": {
+        "reserved": 3,
+        "transmitted": 3,
+        "succeeded": 3,
+        "failed": 0,
+        "retried": 0,
+        "aborted_pre_transmission": 0,
+        "base_grants": 3
+      },
+      "B5-alerts": {
+        "reserved": 5,
+        "transmitted": 5,
+        "succeeded": 5,
+        "failed": 0,
+        "retried": 0,
+        "aborted_pre_transmission": 0,
+        "base_grants": 5
+      },
+      "B5-tripupdates": {
+        "reserved": 10,
+        "transmitted": 10,
+        "succeeded": 10,
+        "failed": 0,
+        "retried": 0,
+        "aborted_pre_transmission": 0,
+        "base_grants": 10
+      },
+      "B5-vehicles": {
+        "reserved": 60,
+        "transmitted": 60,
+        "succeeded": 60,
+        "failed": 0,
+        "retried": 0,
+        "aborted_pre_transmission": 0,
+        "base_grants": 60
+      },
+      "B6": {
+        "reserved": 10,
+        "transmitted": 10,
+        "succeeded": 10,
+        "failed": 0,
+        "retried": 0,
+        "aborted_pre_transmission": 0,
+        "base_grants": 10
+      },
+      "B8": {
+        "reserved": 8,
+        "transmitted": 8,
+        "succeeded": 8,
+        "failed": 0,
+        "retried": 0,
+        "aborted_pre_transmission": 0,
+        "base_grants": 8
+      }
+    },
+    "allocations": {
+      "base": {
+        "max": 110,
+        "used": 101
+      },
+      "retry_pool": {
+        "max": 20,
+        "used": 0
+      },
+      "reserve": {
+        "max": 20,
+        "used": 0
+      }
+    },
+    "counters": {
+      "reserved": 101,
+      "transmitted": 101,
+      "succeeded": 101,
+      "failed": 0,
+      "retried": 0,
+      "aborted_pre_transmission": 0
+    },
+    "total_reserved": 101,
+    "within_cap": true,
+    "reserve_draws": [],
+    "stop_events": [],
+    "refusals_summary": 0
+  },
+  "appid_scan": {
+    "files_scanned": 28,
+    "occurrences": {},
+    "result": "PASS"
+  }
+}
