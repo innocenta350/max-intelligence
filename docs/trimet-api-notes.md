@@ -710,3 +710,136 @@ fixes again stayed inside the S10-scoped files:
    both full runtime paths (429 shared / 503 feed-scoped) are covered over the real loopback
    server, including stopped-runtime operator resolution with the existing 60-second guard.
 
+
+## 13. S11 - Static GTFS Matching (M2)
+
+Implemented November 8, 2026 (plan REV 2, SHA-256 `5a40c480...1002087`). S11 attaches the
+promoted static dataset to the S10 deliveries: route identity, a matching scheduled trip where
+available, its direction/shape, and exact trip-local stop visits. It also separates MAX data from
+other transit data without hiding genuine matching problems. Everything is lookup-based against
+one captured immutable context per call - no file I/O, no archive rescans, no clock reads inside
+matching, and no conversations with developer.trimet.org (all verification offline over synthetic
+worlds; the not-yet-run live system stays exactly as M1/S10 left it).
+
+### 13.1 Canonical public surface
+
+- `prepare_matching_context(load_outcome: LoadOutcome) -> MatchingContext` (backend/trimet/match_index.py):
+  the only production factory. It takes a *successful* M1 `LoadOutcome` (never a guessed bare
+  network/directory pair and never a directory scan), reuses M1 `read_manifest` + the reuse-only
+  `_zip_sha256` helper, cross-checks manifest paths against the supplied directory, streams the
+  archive digest, reads `routes.txt`/`trips.txt` directly from the verified zip (stdlib zip/text/CSV;
+  no extraction, no divergent extracted copies), and re-verifies identity + digest again just before
+  publishing. Whole-context failure only: any defect raises `ContextPreparationError` and no partial
+  context escapes (codes: `manifest_absent`, `manifest_unreadable`, `manifest_paths_mismatch`,
+  `archive_unreadable`, `archive_hash_mismatch`, `source_member_missing`, `source_member_ambiguous`,
+  `csv_structure`, `invalid_cell`, `identity_mismatch`, `index_inconsistency`).
+- `build_matching_context(identity, network, route_rows, trip_rows) -> MatchingContext` - the one
+  shared pure consistency builder used by *both* the production factory and the synthetic tests, so
+  no unchecked test-only constructor exists. It validates duplicates before dictionary conversion
+  (a dict constructor never silently erases a duplicate first), orphan trip-to-route references,
+  invalid route types, MAX route/trip/direction/shape agreement against the M1 network and the
+  authoritative `MAX_ROUTE_IDS`, and trip-local stop-sequence indexes (deep read-only proxies).
+- `match_delivery(delivery: PollDelivery, context: MatchingContext) -> MatchedBatch` (backend/trimet/feed_match.py):
+  the single adapter entry point for the three feeds.
+
+### 13.2 Owner decisions realized
+
+- All-trip lookup from the promoted dataset: the static trip-id lookup covers the full tables (MAX
+  and non-MAX), so a known non-MAX trip classifies NON_MAX while an unknown trip stays UNCLASSIFIED -
+  the MAX-only network lookup never re-labels anything on its own.
+- Native `"rail"` on a static bus route (`route_type == 3`) is UNCLASSIFIED (`type_route_conflict`),
+  retained for diagnosis and excluded from MAX output; known non-MAX rail services (Streetcar 193)
+  filter normally with no diagnostic flood. Conflicts are evaluated **before** the ordinary
+  known-non-MAX branch, so a rail vehicle on a bus route is never consumed by that filter.
+- Vehicle type uses the exact literals `rail` / `bus` only; `R`, `Rail`, whitespace-only values and
+  other strings are UNCLASSIFIED via `unknown_vehicle_type`. GTFS ids stay strings; JSON integers
+  convert through their canonical decimal string only (lossless; no zero stripping, no repair,
+  no proximity fallbacks).
+
+### 13.3 Frozen vocabulary and records
+
+`MatchReason` freezes the 17 exact spellings (pinned in the implementation prompt before code):
+`unknown_route`, `unknown_vehicle_type`, `type_route_conflict`, `trip_not_reported`, `unknown_trip`,
+`trip_route_conflict`, `direction_conflict`, `missing_shape`, `unusable_shape`,
+`missing_stop_details`, `unknown_stop_sequence`, `unknown_stop_id`, `stop_id_sequence_conflict`,
+`ambiguous_stop_visit`, `missing_stop_selectors`, `unsupported_operational_relationship`,
+`diagnostics_overflow`. Raw payload content is never concatenated into reason values.
+
+Exactly one primary classification per parsed record (`max_relevant` / `non_max` / `unclassified`);
+the three counts always sum to the input count. Enrichment is kept strictly separate
+(`matched` / `partial` / `unmatched` / `conflict`) and never upgrades relevance: a MAX vehicle with
+an unavailable trip stays a MAX observation (`trip_not_reported`/`unknown_trip` -> unmatched;
+trip-route disagreement -> conflict with the trip enrichment rejected); direction disagreement is an
+*annotation* (`direction_conflict` field flag plus the `direction_conflict` reason) under PARTIAL, and
+a missing reported direction filled from the matched trip carries explicit `direction_source =
+"static_trip"` provenance. Annotation-only `unsupported_operational_relationship` (non-SCHEDULED
+descriptor relationship or `is_deleted`) never downgrades a resolved MAX TripUpdate.
+
+### 13.4 Trip-local stop resolution (backend/trimet/stop_match.py)
+
+`resolve_stop_visit` implements the plan §9 matrix inside one resolved trip's own `stop_times` list
+(never globally by stop id, never by array offset):
+
+| Selectors | Outcome |
+| --- | --- |
+| sequence + stop ID | visit resolves only when the sequence exists and its stop ID agrees; otherwise explicit conflict `stop_id_sequence_conflict`, no fallback guess |
+| sequence only | that exact visit resolves; unknown sequence is `unknown_stop_sequence` (the reported sequence is never backfilled by a stop ID) |
+| stop ID only | resolves only when the id occurs exactly once in this trip; repeated visits are `ambiguous_stop_visit` and require the sequence |
+| neither | `missing_stop_selectors` |
+
+Sequence values are values, not positions: noncontiguous lists and explicit `0` resolve normally.
+A resolved visit whose stop is missing from the catalog keeps the visit and prediction and is
+annotated `missing_stop_details` - no invented stop metadata, nothing discarded.
+
+### 13.5 Diagnostics cap with exact totals (plan §12)
+
+Per batch, matching diagnostic samples cap at 200 entries including one `diagnostics_overflow`
+summary; 201 events become 199 samples + the overflow reporting *2 omitted*. The per-reason
+`reason_totals` remain exact independent of truncation (verified at 199/200/201/220/500 events;
+e.g. 500 events -> 500 exact total, 301 omitted, samples `...`+overflow `301 matching diagnostics
+omitted beyond the 200-entry cap`). Source parse diagnostics from S10 travel in the batch
+*further separately, referenced intact* (`source_diagnostics`). Routine known non-MAX records
+aggregate as counts only.
+
+### 13.6 Files added (11) and the single docs append
+
+Modules: `backend/trimet/match_errors.py`, `backend/trimet/match_types.py`,
+`backend/trimet/match_index.py`, `backend/trimet/stop_match.py`, `backend/trimet/feed_match.py`.
+Tests: `tests/_s11_helpers.py` (offline synthetic world + promoted-dataset factories + S9/delivery
+builders + socket guard), `tests/test_trimet_match_types.py`,
+`tests/test_trimet_match_index.py`, `tests/test_trimet_stop_match.py`,
+`tests/test_trimet_feed_match.py`, `tests/test_trimet_match_delivery.py` (136 tests total). Only
+existing file modified: this section's append to `docs/trimet-api-notes.md` (this document).
+
+### 13.7 Limits
+
+- The reason-code totals are exact per batch, but diagnostic *samples* truncate at the 200-entry cap
+  by design; consumers needing every occurrence must read `reason_totals`.
+- Synthesis-only identities (`DatasetIdentity` built directly) are clearly synthetic and make no
+  claim that a real archive was verified; `source_directory_name` is descriptive only.
+- Direction provenance fills only fill `direction_source` when the static trip actually supplies a
+  direction; blank static direction plus missing reported direction stays honest (both None).
+- Alert matching adds no S11 diagnostics of its own; the unchanged S9 classifier verdict and its
+  diagnostics carry inside the referenced classification result.
+
+### 13.8 Correction pass (owner review, November 8, 2026)
+
+Two P2 findings from the independent owner review were reproduced and corrected; both fixes stay
+inside the same S11 file scope, and every check the review reported failing now passes:
+
+- **Visitless MAX trips no longer abort matching.** M1's `parse_stop_times_filtered` builds
+  `by_trip` only from rows seen, so a known MAX trip can legitimately have zero stop-time rows;
+  such a trip is accepted by preparation and carried with **empty trip-local indexes**
+  (`match_index._build_context` seeds an index for every indexed trip). A requested stop selector
+  against that empty index resolves UNRESOLVED with the existing reason codes
+  (`unknown_stop_sequence` / `unknown_stop_id`), keeping the known MAX classification, raw record
+  and valid trip/shape references; that record's enrichment is PARTIAL while unrelated records in
+  the same delivery are untouched. Regression tests cover both feed paths and same-batch survival
+  (`test_visitless_*` in `tests/test_trimet_match_index.py` and `tests/test_trimet_feed_match.py`).
+- **Malformed CSV quoting now honors the typed contract.** `csv.Error` is not a `ValueError`
+  subclass, so unterminated quoted fields (`unexpected end of data`) and data immediately after a
+  closing quote (`',' expected after '"'`) escaped the earlier handlers and surfaced as raw
+  `_csv.Error`. `_member_records` now translates any `csv.Error` into
+  `ContextPreparationError(code='csv_structure')` with bounded member/line context (the messages
+  are short fixed phrases; no raw row content). Both named regressions live in
+  `tests/test_trimet_match_index.py`; the valid quoted-comma behavior is unchanged.
