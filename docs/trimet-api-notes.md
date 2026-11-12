@@ -843,3 +843,261 @@ inside the same S11 file scope, and every check the review reported failing now 
   `ContextPreparationError(code='csv_structure')` with bounded member/line context (the messages
   are short fixed phrases; no raw row content). Both named regressions live in
   `tests/test_trimet_match_index.py`; the valid quoted-comma behavior is unchanged.
+## 14. S12 - In-memory LiveState and safe full-snapshot reconciliation (M2)
+
+Stage S12 adds the in-memory state store that the S10 polling runtime will
+deliver into and the S13 API surface will read from. Binding plan:
+`s12-livestate-plan-rev2.md` (SHA-256 `0d3d517d19f8d4e9de6067d149c5e8573bc0495e4cf158d156ba39ecd59b5aff`),
+executed per the owner-approved implementation prompt at `main` checkout
+`6dfde7f1b75a37f74c155f051d0c2bbfd0b45d4a`. This section documents the
+implemented behavior, the frozen limits and the actual verification results.
+
+### 14.1 What S12 adds
+
+Eleven scoped paths: five new backend/trimet state modules
+(`state_types.py`, `state_errors.py`, `live_state.py`, `state_sink.py`),
+five new collected test modules plus one non-collected helper
+(`tests/_s12_helpers.py`, denied collection by its underscore name), and
+this one documentation append. No conftest, `pytest.ini`, dependency or
+existing-file change; no commit, push or S13/S14 work.
+
+The store (`LiveState`) holds the latest accepted observation per vehicle
+ID across **all three** S11 relevance classes (NON_MAX and UNCLASSIFIED
+records are retained source observations; the MAX projection is a filtered
+view, never the source collection), the latest matched TripUpdates and
+alerts views, per-feed source-time high-water marks, one global absence
+fence, and bounded decision telemetry — published as immutable roots under
+one store lock. Reading is snapshot-based: previously returned snapshots
+never change.
+
+### 14.2 Transactions, sessions and publication
+
+- One store lock serializes capture/validate/publish. S11 matching and
+  context re-matching run **outside** the lock; publication uses bounded
+  optimistic retry — exactly **3 total attempts** per operation, after
+  which `concurrent_change` is raised and the winning root is preserved.
+- Every delivery is all-or-nothing: validate, match, reduce into a private
+  candidate, capacity-check, then publish atomically or raise a typed
+  precommit error with nothing published. No anticipated validation error
+  can occur after publication.
+- Sessions: one active session per store (`session_already_open` on a
+  second). A session owns the per-feed sequence/replay namespace; opening
+  and revoking are revision-bumping root mutations. Revocation is an
+  atomic fence — an old-session candidate blocked in matching fails
+  revalidation (`invalid_session`) and publishes nothing, even though its
+  matching began earlier.
+- Sequence rules per session/feed: lower sequence is a stale no-op; equal
+  sequence with byte-equal delivery is a duplicate no-op; equal sequence
+  with different content is `sequence_collision`; higher sequence is
+  eligible. No-ops (replay, stale, ignored-older) never mutate the root or
+  revision — they are counter-only observations. Session replacement
+  clears sequences/replay but never source-time ordering, vehicles,
+  fences or the static generation.
+- Higher-sequence deliveries whose equal-source-time content is ignored or
+  unchanged commit a **metadata-only** transaction: the processed sequence
+  and replay envelope are booked (revision +1) while the source-content
+  view and its receipt time stay intact, so a later conflicting reuse of
+  that sequence is still detected.
+
+### 14.3 Vehicle merge and explicit reconciliation authority
+
+- Ordering uses the feed's own source `queryTime`; receipt/request wall
+  times travel as provenance and never substitute for source order. An
+  older queryTime delivery is ignored whole, including absence removal.
+- Per vehicle ID, observations rank lexicographically by
+  `(vehicle.time_utc_ms, source queryTime)`. A lower rank never replaces
+  the retained record; an identical rank with conflicting raw content
+  retains the existing value and records `observation_tie_conflict`;
+  duplicate IDs within one delivery reduce by the same rank with no
+  arbitrary first/last-wins, and the ID stays in source presence.
+- Authority gates (all required for an absence pass): full-purpose enum +
+  DEFAULT provenance + `since_ms is None` with exact request-timestamp
+  correspondence, HTTP 200, explicit list evidence with known nonnegative
+  integer counts excluding bool, `rejected_count == 0` and
+  `raw_count == len(vehicles)`, no duplicate raw IDs, queryTime strictly
+  newer than both the vehicle high-water mark and the prior fence, and
+  publication-time session/generation/limits validity. Any incompleteness
+  commits safe positive updates with `incomplete_collection`; structurally
+  impossible evidence (bool/negative counts, impossible accounting,
+  purpose/provenance disagreement, non-200) is typed `invalid_delivery`.
+- After all gates pass the store constructs the S9
+  `ReconciliationSnapshot` wrapper with the fixed credential-free basis
+  `s12_complete_default_collection`, established at the original receipt
+  time — never a newly read clock — and retains its basis on the fence.
+  Removal of an absent ID requires its stored source queryTime older than
+  the snapshot queryTime **and** its raw observation time not later than
+  that queryTime, so future-dated observations survive authorized omission
+  and a vehicle updated while the snapshot was in flight is never removed.
+- One bounded global absence fence carries the newest authorized queryTime
+  and its **complete** raw seen-ID set. An ID absent from both the
+  retained map and the fence set needs `vehicle.time_utc_ms >
+  absence_fence_query_ms` to be introduced afterwards; older observations
+  are withheld as `pre_reconciliation_observation` (deliberately
+  conservative anti-resurrection policy; counted in diagnostics). IDs
+  present in a later authorized full gain fresh explicit presence first.
+
+### 14.4 Secondary feeds and context replacement
+
+- TripUpdates order by the header `timestamp_utc_ms` (raw seconds pair
+  rechecked, FULL_DATASET rechecked as an exact integer); alerts order by
+  `AlertsSnapshot.query_time_utc_ms`. Newer timestamps replace the whole
+  view, including explicit empties; older timestamps are ignored; equal
+  timestamp with differing content books the sequence metadata-only and
+  records `source_timestamp_conflict` — the prior view, its timestamp and
+  its receipt stay intact; an exact retry of that booking is a duplicate;
+  changed content reusing the booked sequence is a collision. Entity/alert
+  order, duplicates, flags and instance fields are preserved without any
+  active-prediction inference. Missing TripUpdates never block vehicles.
+- `LiveState.replace_context(candidate, expected_generation=g)` compares
+  authoritative identity `(archive_sha256, feed_version)`;
+  `source_directory_name` is descriptive only. Same content is an atomic
+  no-op; a different candidate re-matches every retained entry and every
+  latest feed view outside the lock and publishes generation `g+1` and
+  revision +1 together. Stale expected generation is an immediate
+  `generation_conflict`. Re-matching uses the **canonical one-record
+  synthetic `VehiclesSnapshot` per retained entry** (raw record + compact
+  stamp, `evidence=None`, empty diagnostics) — internal matching inputs
+  only, never new deliveries or authority — so re-matching never depends
+  on the original whole collection still being retained. A removed trip
+  leaves its vehicle position-only MAX while the route stays MAX; old
+  snapshots remain valid immutable A views.
+
+### 14.5 Frozen limits and diagnostics
+
+All limits are validated constructor-only (positive integers excluding
+bool; no environment/config path): `max_vehicle_entries = 4096` (also the
+exact fence presence-set capacity), `max_vehicle_records_per_delivery =
+4096`, `max_tripupdate_entities = 8192`, `max_alert_records = 4096`,
+`max_nested_feed_records = 100000`, `max_state_diagnostic_samples = 200`.
+Per-delivery record/nested bounds are checked **before** expensive S11
+matching. The fence set overflow rejects the **entire transaction** with
+`capacity_exceeded` (REV 2: no truncation, no weakened introduction rule,
+no extra reason code). Retained-map capacity is checked on the final
+candidate after valid reconciliation removals, so an authorized full can
+free space. Decision telemetry keeps exact per-reason totals plus at most
+200 samples including one overflow entry: 201 events means the first 199
+real samples plus one overflow sample and 2 omitted, collected without
+ever accumulating an unbounded list. The 13 reason codes and 9 error codes
+are the frozen vocabularies pinned by the plan (§12); exceptions carry
+short bounded messages plus a code — never payloads, URLs, paths,
+credentials or exception reprs.
+
+Failure-path honesty: a synthetic non-200 `PollDelivery` reaching the
+adapter is S12 `invalid_delivery`; a real upstream HTTP/transport failure
+is S10's domain before a successful delivery exists; an exception raised
+by the S12 sink inside S10's `_invoke_sink` is reported by S10 as
+`DELIVERY_FAILED` and advances no watermark. The S12 store never reads a
+clock, touches the filesystem, opens a socket, starts a runtime, or loads
+datasets; tests patch `time`/`open` and deny all sockets while a full
+store lifecycle runs. A fresh store object reports
+`prior_state_history = "unknown"` — duplicate tolerance, not
+exactly-once delivery, durability, or an upstream-empty fleet.
+
+### 14.6 S12 verification results (actual)
+
+Preflight baseline (original file set, LIVE_FEED_TESTS unset,
+PYTHONDONTWRITEBYTECODE=1): **838 passed / 17 skipped / 0 failed** in
+68.30 s with the one known intentional duplicate-ZIP-member warning
+(`test_missing_and_duplicate_zip_members_fail`). After implementation:
+
+- Five new collected test modules: **131 passed** in 0.62 s
+  (`test_trimet_state_types.py` 55, `test_trimet_state_sink.py` 14,
+  `test_trimet_live_state.py` 30, `test_trimet_reconciliation.py` 23,
+  `test_trimet_state_context.py` 9).
+- Full offline suite: **969 passed / 17 skipped / 0 failed** in 58.41 s
+  with the same single expected warning.
+- Original test-file set re-run with the five new modules excluded:
+  **838 passed / 17 skipped / 0 failed** in 56.87 s (baseline unchanged).
+
+Named regressions required by the plan: exact fence capacity allowed /
+capacity+1 rejects the whole transaction with no matching where
+instrumented (`test_fence_presence_exact_capacity_is_allowed`,
+`test_fence_presence_capacity_plus_one_rejects_entire_transaction`, plus
+the 4096-boundary variant); secondary equal-timestamp conflict metadata
+booking parameterized over TripUpdates and alerts
+(`test_secondary_feed_newer_older_and_equal_timestamp_rules`,
+`test_secondary_feed_sequence_collision_and_view_integrity`); context
+re-match without the original delivery envelopes
+(`test_context_rematch_without_original_delivery_envelopes`); revocation
+during matching, retry exhaustion, second-session rejection
+(`test_revocation_during_matching_fences_the_survivor`,
+`test_retry_exhaustion_leaves_the_winning_root_intact`,
+`test_second_active_session_is_rejected`); concurrent vehicle/context
+publication losing no accepted update
+(`test_concurrent_vehicle_and_context_publication_loses_no_update`); and
+the deliberate blocked-network guard proof inside
+`test_store_makes_no_clock_file_or_network_calls`. Concurrency tests use
+events and bounded waits only — no sleeps, no real poller startup (that
+integration is S14).
+
+Documented interpretation (for owner review): per plan §8 the vehicle
+high-water mark advances after any committed non-older delivery, including
+incomplete collections; a consequence is that a corrected full carrying
+the *same* queryTime as such an incomplete commit is equality-denied
+authority until a strictly newer queryTime arrives. Equal-source-time
+content that is unchanged is booked as a metadata-only transaction (§6)
+also when the source model is identical, keeping later reuse of that
+sequence detectable as a collision.
+
+### 14.7 S12 completion status
+
+S12 implementation and verification are complete and stop here for
+independent owner review. Not performed: staging, commit, push, branch
+change, S13/S14 work, any dependency change, any `.env`/credential access.
+Checkout remained `main` at `6dfde7f1b75a37f74c155f051d0c2bbfd0b45d4a`
+with clean tracked state; the complete pre-existing API-notes prefix above
+(60,039 bytes) is preserved byte-for-byte, and this §14 is the single
+append made to this document.
+
+### 14.8 Correction pass (independent review, November 10, 2026)
+
+An independent implementation review returned three P2 findings, all inside
+the already approved S12 paths. The targeted corrections below were made
+without changing any documented acceptance behavior, and each finding now
+has a permanent regression test. The S12 completion status above still
+holds: nothing staged, committed or pushed, and no S13/S14 work.
+
+- **F1 — literal boolean collection evidence before authority.**
+  `_accept_vehicles` now enforces the boolean domain of
+  `VehicleCollectionEvidence.key_present` and `is_list` before any
+  authority decision: a non-boolean flag (`1`, `"false"`, …) raises
+  `StateInputError(code='invalid_delivery')` and the whole transaction
+  fails precommit with no removal, fence advance or marker movement.
+  Authority additionally requires both flags to be literally `True`
+  (plan §9). Regressions: `test_non_boolean_collection_flags_cannot_authorize_removal`
+  (4 malformed cases) and `test_literal_true_complete_empty_collection_can_remove`
+  (control) in `tests/test_trimet_reconciliation.py`.
+
+- **F2 — diagnostics bounded during reduction, not only at publication.**
+  The per-transaction reduction no longer materializes a full
+  `list[_Decision]`. A private streaming `_DecisionCollector` counts each
+  fixed-vocabulary event and retains capped samples as reduction proceeds:
+  one `_Decision` event object per event is created and either converted
+  to a retained sample or dropped, so simultaneously retained per-event
+  diagnostic objects stay bounded by the sample cap regardless of delivery
+  size. Exact totals, overflow arithmetic and bounded unique `ApplyResult`
+  reasons are unchanged; committed telemetry is never mutated before
+  publication and the collector is discarded on retry or failure.
+  Regression: `test_many_decisions_are_bounded_while_being_collected`
+  (sample budget 3, 512 retained vehicles, one newer-queryTime incremental
+  with older positions for all 512; exact total 512
+  `older_vehicle_observation`, weakref-instrumented peak live event
+  objects within the budget) in `tests/test_trimet_live_state.py`.
+
+- **F3 — envelope metadata validated before every acceptance branch.**
+  `_validate_common` now also validates the feed domain (`PollFeed`),
+  request/receipt UTC-ms plausibility and non-negative integer
+  `elapsed_mono_ms` (int, `bool` excluded) for every acceptance branch,
+  including the equal-source-time metadata-only booking for both secondary
+  feeds. Malformed envelope metadata raises the typed
+  `StateInputError(code='invalid_delivery')` before sequence
+  classification, matching or publication instead of leaking a raw
+  `ValueError` from `SourceStamp` validators or acknowledging an invalid
+  metadata-only delivery. Regressions:
+  `test_invalid_envelope_metadata_uses_typed_precommit_failure` and
+  `test_equal_source_time_conflict_cannot_book_invalid_envelope_metadata`
+  (both secondary feeds) in `tests/test_trimet_live_state.py`.
+
+Verification after the corrections: the full offline suite passes with
+979 tests (969 prior + 10 new parametrized review regressions), 17 skipped,
+the single expected warning; the review's own 13-case runner passes.
