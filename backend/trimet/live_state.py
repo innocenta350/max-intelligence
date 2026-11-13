@@ -53,6 +53,8 @@ from backend.trimet.feed_types import (
     VehiclesRequestProvenance,
     VehiclesSnapshot,
 )
+from backend.trimet.freshness_errors import FreshnessInputError
+from backend.trimet.freshness_types import ExpiryResult, ExpiryState
 from backend.trimet.match_types import (
     MatchedVehicle,
     MatchingContext,
@@ -154,7 +156,14 @@ class _FeedSlot:
 
 @dataclass(frozen=True)
 class _Root:
-    """One complete immutable store state; publication swaps this object."""
+    """One complete immutable store state; publication swaps this object.
+
+    ``expiry_state`` is the S13 expiry metadata (plan §13/S13 §8): ``None``
+    while expiry is disabled, an :class:`ExpiryState` after the first
+    successful cleanup.  **Every** root construction and
+    ``dataclasses.replace`` path must preserve/update it — a forgotten
+    explicit constructor would silently reset an activated cutoff.
+    """
 
     context: MatchingContext
     generation: int
@@ -164,6 +173,7 @@ class _Root:
     feed_slots: Mapping[PollFeed, _FeedSlot]
     fence: AbsenceFence | None
     telemetry: "_TelemetryAccumulator"
+    expiry_state: ExpiryState | None = None
 
 
 @dataclass(frozen=True)
@@ -393,6 +403,7 @@ class LiveState:
             telemetry=_TelemetryAccumulator(
                 limits.max_state_diagnostic_samples
             ),
+            expiry_state=None,
         )
 
     # ------------------------------------------------------------------
@@ -444,6 +455,7 @@ class LiveState:
             feed_views=views,
             absence_fence=root.fence,
             telemetry=root.telemetry.frozen(),
+            expiry_state=root.expiry_state,
         )
 
     # ------------------------------------------------------------------
@@ -870,6 +882,15 @@ class LiveState:
         if is_full and complete_list_evidence and has_duplicates:
             collector.add(StateReason.DUPLICATE_VEHICLE_ID)
 
+        # S13 ingestion guard (plan §9): the committed expiry cutoff C —
+        # never a later evaluation sample — is the only suppression input
+        # here.  Disabled (None) until the first successful cleanup.
+        expiry_state = root.expiry_state
+        ingestion_cutoff = (
+            expiry_state.cutoff_utc_ms if expiry_state is not None else None
+        )
+        ignored_expired_ids: set[int] = set()
+
         slot = root.feed_slots[PollFeed.VEHICLES]
         high_water = slot.source_time_high_water_ms
         fence = root.fence
@@ -958,6 +979,19 @@ class LiveState:
             # when the raw value repeats: the entry's stamp moves to the
             # delivery that actually carries it (plan §8 rank ordering).
             _, winner, matched_record = contenders[0]
+            if (
+                ingestion_cutoff is not None
+                and winner.expires_utc_ms <= ingestion_cutoff
+            ):
+                # S13 ingestion guard (plan §9): a winner expired at/before
+                # the committed cutoff C cannot enter the retained map —
+                # whether the ID is new or retained, and regardless of the
+                # retained value's own expiry.  The prior retained value is
+                # preserved; no lower-ranked duplicate is promoted, raw
+                # presence/completeness accounting above is untouched, and
+                # this is one ignored-winner event for this publication.
+                ignored_expired_ids.add(vehicle_id)
+                continue
             vehicles[vehicle_id] = VehicleEntry(
                 vehicle_id=vehicle_id,
                 raw=winner,
@@ -1015,6 +1049,22 @@ class LiveState:
         committed = changed or authorized or new_high_water != high_water
         new_session = _booked_session(session, PollFeed.VEHICLES, delivery)
         telemetry = collector.merged()
+        # S13 (plan §9): suppression counters ride every published root
+        # mutation — data or metadata-only — exactly once per publication.
+        # Counter changes alone never replace source content or freshen
+        # its receipt time (the metadata-only branch preserves the prior
+        # source-content view untouched).
+        if expiry_state is not None and ignored_expired_ids:
+            new_expiry_state = ExpiryState(
+                cutoff_utc_ms=expiry_state.cutoff_utc_ms,
+                removed_entries_total=expiry_state.removed_entries_total,
+                ignored_expired_winners_total=(
+                    expiry_state.ignored_expired_winners_total
+                    + len(ignored_expired_ids)
+                ),
+            )
+        else:
+            new_expiry_state = expiry_state
         if committed:
             envelope = FeedEnvelope(
                 delivery=delivery,
@@ -1035,6 +1085,7 @@ class LiveState:
                 feed_slots=_proxied_slots(slots),
                 fence=fence,
                 telemetry=telemetry,
+                expiry_state=new_expiry_state,
             )
         else:
             # Metadata-only: book the processed sequence/replay envelope,
@@ -1049,6 +1100,7 @@ class LiveState:
                 feed_slots=root.feed_slots,
                 fence=root.fence,
                 telemetry=telemetry,
+                expiry_state=new_expiry_state,
             )
         return candidate, collector, removed_ids, authorized, committed
 
@@ -1166,6 +1218,7 @@ class LiveState:
                         feed_slots=root.feed_slots,
                         fence=root.fence,
                         telemetry=collector.merged(),
+                        expiry_state=root.expiry_state,
                     )
                     if self._root is root:
                         self._root = candidate
@@ -1208,6 +1261,7 @@ class LiveState:
                 feed_slots=_proxied_slots(slots),
                 fence=root.fence,
                 telemetry=collector.merged(),
+                expiry_state=root.expiry_state,
             )
             with self._lock:
                 if self._root is root:
@@ -1221,6 +1275,115 @@ class LiveState:
                     raise StateConflictError(
                         "store changed concurrently; publication retries "
                         "exhausted and nothing was published",
+                        code="concurrent_change",
+                    )
+        raise StateConflictError(
+            "store changed concurrently; publication retries exhausted",
+            code="concurrent_change",
+        )
+
+    # ------------------------------------------------------------------
+    # atomic expiry cleanup (S13 plan §8)
+
+    def expire_vehicles(self, cutoff_utc_ms: int) -> ExpiryResult:
+        """Remove every retained vehicle expired at/before ``cutoff_utc_ms``.
+
+        S13 atomic expiry (S13 plan §8): the caller asserts the cutoff's
+        trusted-UTC basis (the controller is the normal owner of that
+        assertion); **this store reads no clock and starts no timer**.
+
+        Publication follows the store's immutable-root protocol: capture
+        under the lock, idempotent equal/older cutoffs publish nothing,
+        the bounded copy/filter runs outside the lock over **every**
+        relevance class, and the candidate revalidates root identity under
+        the lock — at most three total attempts, exhaustion raising
+        ``concurrent_change`` with no partial removal, counter or cutoff
+        publication.  First activation or a strictly increased cutoff is a
+        real root mutation (revision +1, generation unchanged) even when
+        zero vehicles expire.  Source/replay envelopes, source high-water
+        marks, request provenance, the session, the absence fence, the
+        static generation and S12 decision telemetry are all untouched:
+        a retained source batch remains historical source evidence, and
+        the current MAX projection derives from the retained map.
+        """
+        if not _is_plausible_utc_ms(cutoff_utc_ms):
+            raise FreshnessInputError(
+                "cutoff_utc_ms must be a plausible UTC ms epoch excluding "
+                "bool",
+                code="invalid_cutoff",
+            )
+        for attempt in range(1, MAX_CONTEXT_SWAP_ATTEMPTS + 1):
+            with self._lock:
+                root = self._root
+                active = root.expiry_state
+                if active is not None and cutoff_utc_ms <= active.cutoff_utc_ms:
+                    # Idempotent no-op with the actual effective
+                    # cutoff/revision: never lower the cutoff, never
+                    # re-count removals, never rewrite source times.
+                    return ExpiryResult(
+                        requested_cutoff_utc_ms=cutoff_utc_ms,
+                        effective_cutoff_utc_ms=active.cutoff_utc_ms,
+                        revision_before=root.revision,
+                        revision_after=root.revision,
+                        changed=False,
+                        removed_vehicle_ids=(),
+                    )
+            # Outside the lock: bounded copy/filter over every relevance
+            # class so expired NON_MAX/UNCLASSIFIED entries stop consuming
+            # retained capacity too (S13 plan §8).
+            retained: dict[int, VehicleEntry] = {}
+            removed: list[int] = []
+            for vehicle_id, entry in root.vehicles.items():
+                if entry.raw.expires_utc_ms <= cutoff_utc_ms:
+                    removed.append(vehicle_id)
+                else:
+                    retained[vehicle_id] = entry
+            if active is None:
+                new_state = ExpiryState(
+                    cutoff_utc_ms=cutoff_utc_ms,
+                    removed_entries_total=len(removed),
+                    ignored_expired_winners_total=0,
+                )
+            else:
+                new_state = ExpiryState(
+                    cutoff_utc_ms=cutoff_utc_ms,
+                    removed_entries_total=(
+                        active.removed_entries_total + len(removed)
+                    ),
+                    ignored_expired_winners_total=(
+                        active.ignored_expired_winners_total
+                    ),
+                )
+            removed_ids = tuple(sorted(removed))
+            candidate = _Root(
+                context=root.context,
+                generation=root.generation,
+                revision=root.revision + 1,
+                session=root.session,
+                vehicles=_proxied_vehicles(retained),
+                feed_slots=root.feed_slots,
+                fence=root.fence,
+                telemetry=root.telemetry,
+                expiry_state=new_state,
+            )
+            # Construct the anticipated result before publication; a lost
+            # race discards it together with the candidate.
+            result = ExpiryResult(
+                requested_cutoff_utc_ms=cutoff_utc_ms,
+                effective_cutoff_utc_ms=cutoff_utc_ms,
+                revision_before=root.revision,
+                revision_after=candidate.revision,
+                changed=True,
+                removed_vehicle_ids=removed_ids,
+            )
+            with self._lock:
+                if self._root is root:
+                    self._root = candidate
+                    return result
+                if attempt == MAX_CONTEXT_SWAP_ATTEMPTS:
+                    raise StateConflictError(
+                        "store changed concurrently; publication retries "
+                        "exhausted and the prior root was preserved",
                         code="concurrent_change",
                     )
         raise StateConflictError(
@@ -1326,6 +1489,7 @@ class LiveState:
                         feed_slots=_proxied_slots(new_slots),
                         fence=root.fence,
                         telemetry=root.telemetry,
+                        expiry_state=root.expiry_state,
                     )
                     return ContextSwapResult(
                         changed=True,

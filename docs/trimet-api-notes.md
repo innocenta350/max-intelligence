@@ -1101,3 +1101,346 @@ holds: nothing staged, committed or pushed, and no S13/S14 work.
 Verification after the corrections: the full offline suite passes with
 979 tests (969 prior + 10 new parametrized review regressions), 17 skipped,
 the single expected warning; the review's own 13-case runner passes.
+
+## 15. S13 - Freshness assessment and explicit expiry removal (M2)
+
+### 15.1 What S13 adds
+
+S13 completes the M2 store's time story on top of the S12 in-memory
+`LiveState`. It adds three backend modules and three edits:
+
+- `backend/trimet/freshness_types.py` — the frozen S13 vocabulary:
+  five enums (`FeedFreshnessStatus` unknown/fresh/stale,
+  `PositionTimeQuality` known/unknown, `VehicleExpiryStatus`
+  unexpired/expired/unknown, `ClockStatus` uninitialized/trusted/
+  untrusted, `CollectionQuality` complete/partial/unknown), the 13 fixed
+  `FreshnessReason` strings, the owner-fixed `FreshnessPolicy`
+  (10/60/120 s poll defaults → 30/180/360 s staleness thresholds; both
+  future/clock tolerances 5000 ms), validated `TimeSample`,
+  `ClockAssessment`, `FeedFreshnessAssessment`,
+  `VehicleFreshnessAssessment`, `ExpiryState`, `ExpiryResult` and the
+  derived read-only `FreshnessSnapshot`.
+- `backend/trimet/freshness_errors.py` — the typed error family:
+  `FreshnessInputError` with the five fixed codes
+  (`invalid_policy`, `invalid_clock`, `invalid_sample`,
+  `invalid_snapshot`, `invalid_cutoff`) and `FreshnessRecoveryError`
+  with the two fixed recovery codes (`clock_epoch_conflict`,
+  `clock_recovery_blocked`). No other error codes exist.
+- `backend/trimet/freshness.py` — the pure evaluator
+  `evaluate_freshness` (one immutable snapshot plus caller-supplied
+  time inputs; no clocks, no I/O), the validated `SystemFreshnessClock`
+  adapter, `FreshnessController` with `refresh()` and the explicit
+  `reinitialize_clock(expected_clock_epoch=...)` recovery call, and the
+  `freshness_policy_from_config` adapter that converts the existing
+  validated `LiveConfig` poll-interval seconds into a policy in
+  milliseconds (no environment loading, no credential access).
+- `backend/trimet/state_types.py` (edit) — the optional validated
+  `expiry_state` field on `LiveStateSnapshot`, defaulted `None` so every
+  existing S12 constructor call remains compatible.
+- `backend/trimet/live_state.py` (edit) — the public atomic
+  `expire_vehicles(cutoff_utc_ms)` publication, the ingestion guard
+  against the committed cutoff, `ExpiryState`/counter propagation across
+  every root publication path, and snapshot exposure of the expiry
+  state. The store still reads no clock and makes no I/O: expiry is
+  always explicit, never scheduled by the store (S14 owns scheduling).
+- `docs/trimet-api-notes.md` (edit) — this §15, the single append.
+
+Staleness classification is bounded and source-time based: a feed is
+FRESH while its accepted source time is at most 3× its poll interval
+old (equality is FRESH, threshold+1 is STALE) and STALE past it, with
+the source `queryTime`/header timestamp — never the receipt time, the
+replay booking or any request duration — as the basis. Position age is
+a measurement only: it is reported exactly (`PositionTimeQuality`
+known/unknown with the raw age or an exposed `ahead_by_ms`) but creates
+no position-staleness threshold, no warning reason and no visibility
+effect. A stale-source, unexpired MAX vehicle therefore stays visible
+despite missing enrichment.
+
+### 15.2 Frozen vocabulary and the pure evaluator contract
+
+The evaluator exposes five distinct, never conflated metrics per feed:
+source age, source-content receipt age, last booked (replay) delivery
+age, position age (per vehicle) and the recorded request elapsed
+duration. Session replacement clears replay slots only — the booked
+delivery age becomes unavailable with the fixed `no_replay_delivery`
+reason and the content receipt age is never copied into its place.
+Equal-queryTime metadata bookings, source-timestamp conflicts and exact
+replays cannot freshen accepted content. Collection quality
+(complete/partial/unknown) is a feed-level label derived solely from
+the accepted source envelope's own evidence; it implies no per-vehicle
+authority and never creates reconciliation authority by itself.
+
+Boundary rules that the tests pin exactly: a source/position timestamp
+ahead of the sample within the 5000 ms tolerance clamps the measured
+age to 0 while exposing the exact `ahead_by_ms`; one millisecond beyond
+the tolerance makes the age unavailable with the fixed
+`source_time_ahead`/`position_time_ahead` reason (so `ahead_by_ms` may
+coexist only with age exactly 0 or `None` — a positive age excludes
+exposed skew). A future receipt or replay timestamp affects only its
+own metric (`receipt_time_ahead` annotation) and never replaces the
+source classification. A future vehicle `expires` deadline is a normal
+unexpired state, not clock skew. FRESH/STALE statuses require a
+measured age plus the applied threshold and forbid only the overriding
+`source_time_ahead` reason; the metric annotations
+(`no_replay_delivery`, `receipt_time_ahead`) may coexist.
+
+Untrusted or inconsistent time never invents a view: with an untrusted
+clock or a sample older than the snapshot's accepted cutoff
+(`sample_before_snapshot_cutoff`), the evaluation returns unknown
+statuses for every feed and vehicle, retains the whole projection with
+no expiry claims, and never reports a negative age or a lowered cutoff.
+A trusted evaluation requires an actually validated `TimeSample` — any
+other object is the typed `FreshnessInputError(code='invalid_sample')`,
+never a raw attribute failure or a duck-typed acceptance. Unknown
+source/time branches erase nothing whose own inputs remain valid: a
+source timestamp beyond tolerance stays UNKNOWN with its ahead-of-clock
+reason while the trusted local receipt ages, the recorded request
+duration and the accepted collection's own completeness evidence are
+still reported; global clock distrust still hides every UTC-derived age
+but keeps the previously recorded request duration. Evaluation is
+pure: repeated runs are deterministic, the store is never mutated and
+the evaluator reads no clock of any kind.
+
+### 15.3 Expiry publication and the ingestion guard
+
+`LiveState.expire_vehicles(cutoff_utc_ms)` is the only removal path.
+The cutoff must be a plausible UTC millisecond instant excluding
+`bool` (`FreshnessInputError(code='invalid_cutoff')` otherwise) and is
+applied monotonically: an equal cutoff is an honest idempotent no-op
+(`changed=False`, no revision bump), an older cutoff never lowers the
+accepted cutoff or revives anything, and a higher cutoff publishes even
+with zero removals (one revision bump, `ExpiryState.cutoff_utc_ms`
+advances). Removal is the physical predicate: entries whose verified
+`expires` timestamp is at or before the cutoff are removed across all
+three S11 relevance classes (MAX, NON_MAX, UNCLASSIFIED) in one atomic
+transaction. The publication runs its copy/filter window outside the
+store lock and revalidates before committing, with three total attempts
+bounded — interleaved publications force an exact candidate rebuild
+from the winning root (never from stale state), and exhausted retries
+raise `StateConflictError(code='concurrent_change')` with the prior
+root fully preserved and nothing partially applied. Expiry frees
+retained capacity, touches no source/replay envelope, no high-water
+mark, no fence, no session/generation/identity and no S12 decision
+telemetry, and previously captured snapshots never change.
+
+The ingestion guard makes removed vehicles non-resurrectable without
+tombstones: once a cutoff C is committed, a vehicle observation whose
+expiry winner is at or before C is suppressed at ingestion time —
+cached reinsertions, authoritative full snapshots and incrementals
+alike — counted once per suppressed winner ID on the published
+transaction only. A suppressed equal-queryTime winner publishes a
+counter-only `METADATA_ONLY` transaction (one revision bump, the
+suppression counter rides along) without freshening the accepted
+source content or its receipt; exact replays, ignored-older deliveries
+and discarded (capacity-exceeded) candidates count nothing. The guard
+uses the committed cutoff only — never a deferred or evaluation-time
+clock reading — and lower-ranked records are never promoted to replace
+a suppressed winner. A genuinely newer observation with a later expiry
+returns normally; with no cleanup yet performed (`C=None`) the guard
+is disabled and nothing is preemptively suppressed. Raw presence
+accounting for authoritative full snapshots happens before
+suppression, so the fence records the suppressed ID's presence
+honestly. `ExpiryState` (cutoff plus both counters,
+`removed_entries_total` and `ignored_expired_winners_total`)
+propagates through every root publication path — the six baseline
+explicit sites (initial construction, committed vehicle publication,
+metadata-only vehicle publication, both secondary-feed paths and
+static-context replacement with its generation bump) plus the new
+cleanup path and session close/reopen — and the accepted cutoff is
+never lowered by any of them.
+
+### 15.4 Clock protocol, distrust and epoch-checked recovery
+
+The clock protocol is explicit: nothing samples at import, construction
+or injection; `SystemFreshnessClock` and any injected clock are
+validated (`FreshnessInputError(code='invalid_clock')` for a
+non-provider, `code='invalid_snapshot'` for a non-store), a falsy but
+valid provider is used rather than silently replaced, and sampling
+happens only inside explicit `refresh()`/`reinitialize_clock()` calls.
+`refresh()` is the single destructive-cleanup entry point and it never
+runs without a trust decision first: the first valid wall/monotonic
+sample anchors epoch 1; a negative monotonic or wall elapsed delta, or
+an absolute wall-versus-monotonic divergence strictly greater than the
+5000 ms tolerance (equality allowed), makes the clock sticky-UNTRUSTED
+with the fixed `clock_moved_backwards` / `clock_diverged` reasons, and
+provider failures or non-`TimeSample` returns are bounded
+(`clock_read_failed` / `invalid_clock_sample`) rather than fatal. A
+distrusted `refresh()` performs no cleanup at all — no expiry call
+reaches the store before a trust decision exists, so a forward jump can
+never delete vehicles and only then be diagnosed
+(`test_clock_jump_is_distrusted_before_any_expiry_removal`).
+
+Recovery is explicit and epoch-checked:
+`reinitialize_clock(expected_clock_epoch=...)` refuses a stale or
+unknown epoch with `FreshnessRecoveryError(code='clock_epoch_conflict')`
+(changing nothing), and otherwise samples and validates one corrected
+pair and establishes a new anchor with epoch+1. Recovery re-anchors the
+clock only: it never expires, never clears store data, counters,
+source ordering or expiry history, never calls cleanup and never
+touches S10's quota clock. Recovery may not lower an accepted expiry
+cutoff: corrected UTC still below the store cutoff raises the frozen
+typed refusal `FreshnessRecoveryError(code='clock_recovery_blocked')` —
+trust is not restored, the anchor/epoch/history and store stay exactly
+as they were, no force-reset escape hatch exists, and the bounded
+`utc_before_expiry_cutoff` time-quality cause travels in the refusal
+message. A recovery attempt on a never-anchored clock whose provider
+fails or returns a non-`TimeSample` is bounded too: it returns a
+coherent UNINITIALIZED assessment and leaves the controller fully
+usable — no controller field is mutated until a valid candidate
+assessment exists, so no failed recovery can poison later refreshes. A
+`refresh()` whose own assessment is untrusted passes
+`sample=None` to the evaluator, so trust and time inputs can never
+disagree. `refresh()` and recovery are serialized inside the
+controller, so an obsolete clock assessment cannot race a recovery
+into destructive cleanup (verified with a real-thread, event-bounded
+serialization test — the only threaded test in the S13 set). When the
+store loses the publication race against a cleanup, the cycle reports
+the fixed `cleanup_deferred` reason with a `changed=False`
+`ExpiryResult` — distinct from a successful removal — and the derived
+view still filters expired entries from visible MAX IDs while every
+retained entry remains assessed. Only the publication-race code
+`concurrent_change` takes that deferred path: any other
+`StateConflictError` code propagates unchanged, never relabelled as
+ordinary cleanup contention.
+
+### 15.5 Files added (8) and edited (3), the single docs append
+
+Added: `backend/trimet/freshness_types.py`,
+`backend/trimet/freshness_errors.py`, `backend/trimet/freshness.py`,
+`tests/_s13_helpers.py` (shared offline helpers; collects no tests),
+`tests/test_trimet_freshness_types.py`,
+`tests/test_trimet_freshness.py`, `tests/test_trimet_expiry.py` and
+`tests/test_trimet_freshness_clock.py`. Edited:
+`backend/trimet/state_types.py`, `backend/trimet/live_state.py` and
+this document. No other file was touched — no conftest, no dependency
+change, no `.env` or credential access, no live request, no S14 work.
+
+### 15.6 S13 verification results (actual)
+
+The four new collected modules hold 146 tests (44 vocabulary,
+validation and config-adapter, 36 evaluator, 31 expiry/guard/races,
+35 clock controller), all passing offline against the synthetic S11/S12
+worlds with a deny-all socket guard (a deliberate non-loopback attempt
+is proven blocked), integer-millisecond fake clocks and deterministic
+same-thread race injection (no sleeps; one bounded real-thread
+serialization test as documented above). The full offline suite passes
+with 1125 tests (979 prior + 146 new), 17 skipped, the single expected
+duplicate-ZIP warning; the pre-existing 35-file set alone still passes
+979/17/0, and the S12 review's own 13-case runner passes (exit 0).
+
+Five implementation defects were found and fixed during verification,
+before any completion report, each now pinned by regression tests: (1)
+FRESH/STALE reason validation rejected legitimate metric annotations —
+only `source_time_ahead` is forbidden; (2) the `ahead_by_ms`/age
+invariant wrongly forbade the within-tolerance coexistence with a
+clamped age of exactly 0; (3) `refresh()` passed its real sample to the
+evaluator together with an untrusted assessment — it now passes
+`sample=None` whenever its own assessment is untrusted; (4)
+`clock_epoch_conflict` was raised as `FreshnessInputError` instead of
+`FreshnessRecoveryError`; (5) `freshness_policy_from_config` referenced
+`LiveConfig` in a runtime `isinstance` check that the type-checking-only
+import never provided, making the documented config adapter unusable —
+the runtime import was added. The named acceptance regressions all exist
+and pass: `test_expiry_state_survives_each_root_publication_path`,
+`test_deferred_cleanup_assesses_all_retained_entries_but_filters_visible_max`,
+`test_ingestion_guard_uses_committed_cutoff_not_deferred_evaluation_time`,
+`test_suppressed_winner_metadata_only_counts_once_without_freshening_content`,
+`test_clock_jump_is_distrusted_before_any_expiry_removal`,
+`test_clock_recovery_preserves_store_and_does_not_run_cleanup` and
+`test_position_age_does_not_create_position_stale_warning`.
+
+### 15.7 S13 completion status
+
+S13 implementation and verification are complete and stop here for
+independent owner review. Not performed: staging, commit, push, branch
+change, S14 work, any live feed request, any dependency change, any
+`.env`/credential access. Checkout remained `main` at
+`b229b000965d38fa1fbe927cedd87e9d9ab29e6b` with clean tracked state
+apart from the eleven authorized paths above. The complete pre-existing
+API-notes prefix above (75,626 bytes through §14.8) is preserved
+byte-for-byte, and this §15 is the single append made to this document.
+
+### 15.8 Correction pass (independent review, November 11, 2026)
+
+An independent implementation review reproduced the repository totals
+and every preservation check, and returned four P2 findings inside the
+already approved S13 paths. The finalized independent runner (14 cases,
+SHA-256
+`4AA0968D4B522E88B4CDE5354BD6166B1E7DE07ECFC4482BEF083ED6ED0E810F`)
+executed unchanged before and after the corrections: 14 failures
+before, 14 passes after, its assertions never weakened or altered. Each
+finding also gained permanent regressions inside the authorized S13
+test files.
+
+- **F1 — recovery poisoning and the typed refusal contract.**
+  `reinitialize_clock` previously mutated controller fields before a
+  valid candidate assessment existed: on a never-anchored controller
+  (`epoch 0`) a failing provider attempted an illegal
+  `ClockAssessment(UNTRUSTED, epoch=0)`, left the controller marked
+  untrusted with no assessment, and made the next `refresh()` raise
+  `AttributeError`. Recovery now constructs the candidate assessment
+  first and mutates no controller field until it is valid; a provider
+  failure on a never-anchored clock returns a coherent UNINITIALIZED
+  assessment and leaves the controller fully usable (the next refresh
+  anchors normally), while an established clock keeps its sticky
+  distrust. Separately, recovery whose corrected UTC is still below the
+  store's accepted cutoff now raises the frozen typed refusal
+  `FreshnessRecoveryError(code='clock_recovery_blocked')` — trust not
+  restored, anchor/epoch/history/store unchanged, no force-reset path,
+  the bounded `utc_before_expiry_cutoff` cause in the message — instead
+  of returning an assessment. Regressions in
+  `tests/test_trimet_freshness_clock.py`: the rewritten
+  `test_recovery_below_cutoff_raises_frozen_typed_refusal`,
+  `test_recovery_provider_failure_before_first_anchor_is_bounded` (both
+  failure modes) and
+  `test_failed_initial_recovery_does_not_poison_subsequent_refresh`
+  (both failure modes, mirroring the runner's both-contracts tolerance).
+
+- **F2 — the pure evaluator accepts unvalidated samples.**
+  `evaluate_freshness` checked only the None/trust pairing and then
+  accessed sample fields directly: `True`, bare objects or a
+  duck-typed UTC-only namespace either leaked a raw `AttributeError` or
+  passed as trusted input. A trusted assessment now requires an
+  actually validated `TimeSample`; anything else is the typed
+  `FreshnessInputError(code='invalid_sample')`. The None/untrusted
+  pairing and purity are unchanged. Regressions in
+  `tests/test_trimet_freshness.py`:
+  `TestSampleTypeBoundary::test_evaluator_requires_actual_validated_
+  timesample` (bool / plain object / duck-typed UTC-only).
+
+- **F3 — unrelated store conflicts mislabelled as deferred cleanup.**
+  The controller caught the whole `StateConflictError` class and turned
+  every code into `cleanup_deferred`. Only the publication-race code
+  `concurrent_change` may take that path; `generation_conflict` and
+  `sequence_collision` now propagate with their original exception and
+  code, and nothing is published or fabricated for them. Regressions in
+  `tests/test_trimet_freshness_clock.py`:
+  `test_controller_propagates_non_publication_conflicts` (both codes),
+  alongside the existing deferred-cleanup control.
+
+- **F4 — UNKNOWN source/time branches erased independent metrics.**
+  The source-beyond-tolerance branch returned early, dropping the
+  trusted local receipt ages, the recorded request duration and the
+  accepted collection's completeness evidence; the global-untrusted
+  branch dropped the recorded request duration, which is a previously
+  recorded fact unrelated to the current wall clock. Receipt/replay age
+  computation is now shared (`_receipt_ages`) and the beyond-tolerance
+  branch retains all three independent facts while the source age stays
+  UNKNOWN with its fixed reason; the untrusted branch retains the
+  request duration (UTC-derived ages stay hidden there). No duration is
+  relabelled as API publication latency and collection quality remains
+  feed-level only. Regressions in `tests/test_trimet_freshness.py`:
+  `test_source_ahead_beyond_tolerance_preserves_independent_metrics`
+  and `test_untrusted_utc_preserves_recorded_request_duration`.
+
+Verification after the corrections: the unchanged independent runner
+passes 14/14; the four S13 modules hold 146 tests (44 + 36 + 31 + 35),
+all passing; the full offline suite passes with 1125 tests (979 prior +
+146 new), 17 skipped, the single expected duplicate-ZIP warning; the
+pre-existing 35-file set alone still passes 979/17/0; and the S12
+review's own 13-case runner passes (exit 0). The 75,626-byte pre-existing
+docs prefix remains byte-for-byte identical; the corrections amended
+only §15 text and appended this subsection. Nothing staged, committed
+or pushed; checkout remained `main` at HEAD
+`b229b000965d38fa1fbe927cedd87e9d9ab29e6b` with the unchanged preflight
+index hash.

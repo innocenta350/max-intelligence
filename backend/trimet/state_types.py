@@ -34,6 +34,7 @@ from backend.trimet.feed_types import (
     MIN_PLAUSIBLE_UTC_MS,
     VehiclesRequestProvenance,
 )
+from backend.trimet.freshness_types import ExpiryState
 from backend.trimet.match_types import (
     DatasetIdentity,
     MatchedBatch,
@@ -443,6 +444,13 @@ class LiveStateSnapshot:
     current classification is ``MAX_RELEVANT``.  ``prior_state_history``
     is ``"unknown"`` for every fresh store object: an empty new store is
     never an authoritative upstream-empty fleet or a persisted recovery.
+
+    ``expiry_state`` is the S13 :class:`~backend.trimet.freshness_types.
+    ExpiryState` (cutoff + cumulative removal/suppression counters) once
+    expiry has been explicitly activated by a first successful
+    :meth:`~backend.trimet.live_state.LiveState.expire_vehicles` call;
+    it is ``None`` (disabled) for every S12-era store and constructor,
+    preserving all existing contracts unchanged.
     """
 
     revision: int
@@ -455,8 +463,13 @@ class LiveStateSnapshot:
     feed_views: Mapping[PollFeed, FeedStateView]
     absence_fence: AbsenceFence | None
     telemetry: StateTelemetry
+    expiry_state: ExpiryState | None = None
 
     def __post_init__(self) -> None:
+        if self.expiry_state is not None and not isinstance(
+            self.expiry_state, ExpiryState
+        ):
+            raise ValueError("expiry_state must be an ExpiryState or None")
         object.__setattr__(
             self, "vehicle_entries", MappingProxyType(dict(self.vehicle_entries))
         )
